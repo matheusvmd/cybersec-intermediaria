@@ -1,17 +1,15 @@
 {
   "name": "privacy-auditor-firefox",
   "version": "1.0.0",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "web-ext lint --source-dir extension",
+    "run": "web-ext run --source-dir extension",
+    "build": "web-ext build --source-dir extension --artifacts-dir web-ext-artifacts --overwrite-dest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Extensão acadêmica de auditoria de privacidade para Firefox",
   "devDependencies": {
     "web-ext": "^10.7.0"
   }

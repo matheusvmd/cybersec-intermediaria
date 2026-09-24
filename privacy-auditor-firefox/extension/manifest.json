@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "Privacy Auditor",
+  "version": "0.1.0",
+  "description": "Extensão acadêmica para observar requisições por aba no Firefox.",
+  "permissions": [
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking",
+    "cookies",
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "privacy-auditor@academico.local",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "browser_action": {
+    "default_title": "Privacy Auditor",
+    "default_popup": "popup.html"
+  }
+}
