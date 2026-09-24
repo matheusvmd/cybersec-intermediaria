@@ -7,25 +7,49 @@
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <main>
+    <main id="content" aria-busy="true">
       <h1>Privacy Auditor</h1>
+      <p id="status" class="status status--loading" role="status">
+        Carregando dados da aba…
+      </p>
 
-      <dl>
-        <div class="metric metric--url">
-          <dt>URL</dt>
-          <dd id="page-url">Indisponível</dd>
-        </div>
-        <div class="metric">
-          <dt>Domínio principal</dt>
-          <dd id="main-domain">Indisponível</dd>
-        </div>
-        <div class="metric">
-          <dt>Total de requisições</dt>
-          <dd id="total-requests">0</dd>
-        </div>
-      </dl>
+      <div id="report" hidden>
+        <dl class="summary">
+          <div class="metric metric--url">
+            <dt>URL</dt>
+            <dd id="page-url">Indisponível</dd>
+          </div>
+          <div class="metric">
+            <dt>Domínio principal</dt>
+            <dd id="main-domain">Indisponível</dd>
+          </div>
+          <div class="metric">
+            <dt>Total de requisições</dt>
+            <dd id="total-requests" class="number">0</dd>
+          </div>
+        </dl>
 
-      <p id="status" class="status" role="status" hidden></p>
+        <section>
+          <h2>
+            Domínios de terceira parte
+            <span id="third-party-count" class="badge">0</span>
+          </h2>
+          <p id="no-third-parties" class="empty">Nenhum domínio detectado.</p>
+          <ul id="third-party-domains" class="item-list"></ul>
+        </section>
+
+        <section>
+          <h2>Requisições por tipo</h2>
+          <p id="no-resource-types" class="empty">Nenhuma requisição registrada.</p>
+          <ul id="resource-types" class="item-list"></ul>
+        </section>
+
+        <section>
+          <h2>Armazenamento HTML5</h2>
+          <p id="no-storage" class="empty">Nenhum relatório de armazenamento disponível.</p>
+          <div id="storage-origins"></div>
+        </section>
+      </div>
     </main>
 
     <script src="popup.js"></script>

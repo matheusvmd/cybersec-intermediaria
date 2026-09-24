@@ -5,7 +5,8 @@
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 360px;
+  max-width: 440px;
   background: Canvas;
   color: CanvasText;
 }
@@ -16,23 +17,40 @@ main {
 
 h1 {
   margin: 0 0 16px;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
-dl {
+h2 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+
+section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+}
+
+.summary {
   display: grid;
   gap: 12px;
   margin: 0;
 }
 
 .metric {
-  padding-top: 12px;
-  border-top: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, CanvasText 12%, transparent);
 }
 
-dt {
+.metric:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+dt,
+.label {
   margin-bottom: 4px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -41,22 +59,90 @@ dt {
 
 dd {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
-.metric--url dd {
+.metric--url dd,
+.origin-title,
+.database-list {
   overflow-wrap: anywhere;
 }
 
-#total-requests {
+.number {
   font-size: 1.5rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
 
+.badge {
+  display: inline-block;
+  min-width: 1.5em;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, AccentColor 18%, transparent);
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.item-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.88rem;
+}
+
+.item-list li {
+  padding-left: 2px;
+}
+
+.type-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.storage-origin {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, CanvasText 16%, transparent);
+  border-radius: 8px;
+}
+
+.origin-title {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+}
+
+.frame-report {
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+  font-size: 0.82rem;
+}
+
+.frame-report:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.frame-title {
+  margin: 0 0 5px;
+  font-weight: 700;
+}
+
+.storage-row {
+  margin: 3px 0;
+}
+
+.empty,
 .status {
-  margin: 14px 0 0;
-  font-size: 0.8rem;
-  opacity: 0.75;
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.72;
+}
+
+.status--error {
+  color: #c33;
+  opacity: 1;
 }
 
