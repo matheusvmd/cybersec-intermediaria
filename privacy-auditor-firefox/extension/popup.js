@@ -32,6 +32,18 @@ const changedCookiesElement = document.querySelector("#changed-cookies");
 const noChangedCookiesElement = document.querySelector(
   "#no-changed-cookies"
 );
+const canvasStatusElement = document.querySelector("#canvas-status");
+const canvasSummaryElement = document.querySelector("#canvas-summary");
+const canvasCallsElement = document.querySelector("#canvas-calls");
+const bounceStatusElement = document.querySelector("#bounce-status");
+const bounceSummaryElement = document.querySelector("#bounce-summary");
+const bounceChainElement = document.querySelector("#bounce-chain");
+const bounceDetectionsElement = document.querySelector("#bounce-detections");
+const identifierStatusElement = document.querySelector("#identifier-status");
+const identifierSummaryElement = document.querySelector("#identifier-summary");
+const identifierDetectionsElement = document.querySelector(
+  "#identifier-detections"
+);
 
 function getHostname(url) {
   try {
@@ -298,6 +310,104 @@ function renderCookies(cookies) {
   cookieErrorsElement.hidden = errors.length === 0;
 }
 
+function setDetectionStatus(element, detected) {
+  element.textContent = detected ? "Possível detecção" : "Não detectado";
+  element.className = detected
+    ? "detection-status detection-status--possible"
+    : "detection-status";
+}
+
+function renderCanvas(canvas) {
+  const report = canvas || {};
+  const calls = Array.isArray(report.calls) ? report.calls : [];
+  setDetectionStatus(canvasStatusElement, Boolean(report.detected));
+  clearChildren(canvasCallsElement);
+  canvasSummaryElement.textContent = report.detected
+    ? `${report.totalCalls || calls.length} leitura(s); método(s): ${(
+        report.methods || []
+      ).join(", ")}.`
+    : "Nenhuma leitura de canvas observada.";
+
+  calls.forEach((call) => {
+    const lines = [
+      `${call.origin || "Origem indisponível"} · frame ${
+        call.frame || call.frameId
+      }`,
+      formatTimestamp(call.timestamp),
+    ];
+
+    if (call.scriptUrl) {
+      lines.push(`Script possível: ${call.scriptUrl}`);
+    }
+    if (Array.isArray(call.stack) && call.stack.length > 0) {
+      lines.push(`Stack resumido: ${call.stack.join(" ← ")}`);
+    }
+
+    canvasCallsElement.append(createRecord(call.method || "canvas", lines));
+  });
+}
+
+function renderBounceTracking(bounceTracking) {
+  const report = bounceTracking || {};
+  const chain = Array.isArray(report.chain) ? report.chain : [];
+  const detections = Array.isArray(report.detections)
+    ? report.detections
+    : [];
+  setDetectionStatus(bounceStatusElement, Boolean(report.detected));
+  clearChildren(bounceChainElement);
+  clearChildren(bounceDetectionsElement);
+  bounceSummaryElement.textContent = report.detected
+    ? "Heurística: passagem rápida por domínio intermediário com redirects automáticos."
+    : "Nenhuma cadeia suspeita observada.";
+
+  chain.forEach((entry) => {
+    appendListItem(
+      bounceChainElement,
+      `${entry.registrableDomain || "domínio indisponível"} — ${entry.url}`
+    );
+  });
+
+  detections.forEach((detection) => {
+    bounceDetectionsElement.append(
+      createRecord(
+        detection.intermediateDomain || "Intermediário indisponível",
+        [
+          detection.justification || "Heurística de redirecionamento rápido",
+          `Intervalo: ${detection.intervalMs} ms`,
+          `Cadeia: ${(detection.chain || [])
+            .map((entry) => entry.registrableDomain)
+            .filter(Boolean)
+            .join(" → ")}`,
+        ]
+      )
+    );
+  });
+}
+
+function renderIdentifierSharing(identifierSharing) {
+  const report = identifierSharing || {};
+  const detections = Array.isArray(report.detections)
+    ? report.detections
+    : [];
+  setDetectionStatus(identifierStatusElement, Boolean(report.detected));
+  clearChildren(identifierDetectionsElement);
+  identifierSummaryElement.textContent = report.detected
+    ? "Possível compartilhamento de identificador; os valores originais não são armazenados."
+    : "Nenhum possível compartilhamento de identificador observado.";
+
+  detections.forEach((detection) => {
+    identifierDetectionsElement.append(
+      createRecord(detection.rule || "Possível compartilhamento", [
+        `Domínios: ${(detection.domains || []).join(", ") || "indisponíveis"}`,
+        `Tipo de parâmetro: ${
+          (detection.parameterTypes || []).join(", ") || "valor de cookie"
+        }`,
+        detection.justification || "Correspondência de hash local",
+      ])
+    );
+  });
+}
+
 function renderReport(report, fallbackUrl) {
   const url = report.url || fallbackUrl || "";
   const mainDomain =
@@ -315,6 +425,9 @@ function renderReport(report, fallbackUrl) {
   renderRequests(report.requests);
   renderStorage(report.storage);
   renderCookies(report.cookies);
+  renderCanvas(report.canvas);
+  renderBounceTracking(report.bounceTracking);
+  renderIdentifierSharing(report.identifierSharing);
 
   reportElement.hidden = false;
   contentElement.setAttribute("aria-busy", "false");

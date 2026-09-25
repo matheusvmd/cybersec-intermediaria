@@ -2,7 +2,9 @@
 
 Extensão acadêmica de privacidade para Firefox. O popup apresenta as
 requisições realizadas pela aba, os domínios registráveis de terceira parte e
-um inventário de armazenamento HTML5 e cookies relacionado à navegação.
+um inventário de armazenamento HTML5 e cookies relacionado à navegação. Também
+apresenta indicadores heurísticos de leitura de canvas, bounce tracking e
+possível compartilhamento de identificadores.
 
 ## Funcionalidades atuais
 
@@ -18,10 +20,21 @@ um inventário de armazenamento HTML5 e cookies relacionado à navegação.
   com `cookies.onChanged`.
 - Separa cookies preexistentes dos criados, alterados ou removidos durante a
   navegação e os classifica por parte e duração.
-- Não armazena os valores de cookies, `localStorage` ou `sessionStorage`.
+- Detecta leituras de canvas por `toDataURL`, `toBlob` e `getImageData` no
+  contexto principal da página, preservando a chamada original.
+- Mantém a cadeia de redirects da navegação principal e sinaliza passagens
+  automáticas e rápidas por um domínio intermediário distinto.
+- Analisa parâmetros de URLs de terceiros e compara somente hashes SHA-256
+  locais para encontrar o mesmo identificador em terceiros diferentes ou em
+  cookie e URL.
+- Oculta, nas URLs guardadas e exibidas, valores reconhecidos como possíveis
+  identificadores, mantendo o nome do parâmetro e os demais componentes.
+- Não armazena valores de cookies, parâmetros identificadores,
+  `localStorage`, `sessionStorage` ou conteúdo de canvas.
 
-O projeto ainda não inspeciona canvas, não calcula score e não bloqueia
-requisições.
+As detecções são indícios e podem ter falsos positivos. O projeto não calcula
+score, não instala hooks de hijacking, não bloqueia requisições e não envia os
+dados coletados para servidores externos.
 
 ## Carregar temporariamente no Firefox
 
@@ -54,6 +67,7 @@ npm run build
 ```
 
 - `lint` valida a extensão com `web-ext`.
-- `test` executa os testes unitários de classificação de domínios e cookies.
+- `test` executa os testes unitários de domínios, cookies, parâmetros
+  identificadores e bounce tracking.
 - `run` inicia uma instância temporária do Firefox com a extensão carregada.
 - `build` gera o pacote em `web-ext-artifacts/`.

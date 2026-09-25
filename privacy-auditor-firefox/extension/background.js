@@ -4,12 +4,16 @@ const tabStates = new Map();
 const {
   classifyCookie,
   classifyDomain,
+  classifyIdentifierParameter,
   cookieKey,
+  detectBounceTracking,
+  findIdentifierSharing,
   getRegistrableDomain,
   normalizeHostname,
+  redactIdentifierParameters,
 } = globalThis.PrivacyUtils;
-
-console.info("[Privacy Auditor] background.js iniciado");
+const navigationChains = new Map();
+const BOUNCE_INTERVAL_MS = 3000;
 
 function parseUrl(url) {
   try {
@@ -23,13 +27,16 @@ function createTabState(url = "") {
   const parsedUrl = parseUrl(url);
   const hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
   const state = {
-    url,
+    url: redactIdentifierParameters(url),
     hostname,
     registrableDomain: getRegistrableDomain(hostname, browser.publicSuffix),
     requests: [],
     requestIds: new Set(),
     countsByType: Object.create(null),
     storageReports: new Map(),
+    canvasCalls: [],
+    identifierOccurrences: [],
+    identifierOccurrenceKeys: new Set(),
     observedDomains: new Set(),
     cookieStoreId: "",
     cookies: {
@@ -38,6 +45,7 @@ function createTabState(url = "") {
       scannedHosts: new Set(),
       errors: [],
     },
+    navigationChain: null,
   };
 
   if (state.registrableDomain) {
@@ -87,7 +95,7 @@ function preserveCurrentDocumentStorage(previousState, nextState, details) {
 
 function updateMainDocument(state, url) {
   const parsedUrl = parseUrl(url);
-  state.url = url;
+  state.url = redactIdentifierParameters(url);
   state.hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
   state.registrableDomain = getRegistrableDomain(
     state.hostname,
@@ -97,6 +105,173 @@ function updateMainDocument(state, url) {
   if (state.registrableDomain) {
     state.observedDomains.add(state.registrableDomain);
   }
+}
+
+function registrableDomainFromUrl(url) {
+  const parsedUrl = parseUrl(url);
+  return parsedUrl
+    ? getRegistrableDomain(parsedUrl.hostname, browser.publicSuffix)
+    : "";
+}
+
+function appendNavigationEntry(chain, url, timestamp, transition) {
+  const lastEntry = chain.entries[chain.entries.length - 1];
+  if (lastEntry && lastEntry.url === url) {
+    return;
+  }
+
+  chain.entries.push({
+    url: redactIdentifierParameters(url),
+    registrableDomain: registrableDomainFromUrl(url),
+    timestamp,
+    transition,
+  });
+}
+
+function recordMainFrameNavigation(details) {
+  const timestamp = Number.isFinite(details.timeStamp)
+    ? details.timeStamp
+    : Date.now();
+  let chain = navigationChains.get(details.tabId);
+
+  if (!chain || chain.requestId !== details.requestId) {
+    chain = {
+      requestId: details.requestId,
+      entries: [],
+      redirects: [],
+    };
+    navigationChains.set(details.tabId, chain);
+  }
+
+  appendNavigationEntry(chain, details.url, timestamp, "navegação");
+  return chain;
+}
+
+function recordMainFrameRedirect(details) {
+  if (details.tabId === -1) {
+    return;
+  }
+
+  const timestamp = Number.isFinite(details.timeStamp)
+    ? details.timeStamp
+    : Date.now();
+  let chain = navigationChains.get(details.tabId);
+
+  if (!chain || chain.requestId !== details.requestId) {
+    chain = {
+      requestId: details.requestId,
+      entries: [],
+      redirects: [],
+    };
+    navigationChains.set(details.tabId, chain);
+  }
+
+  appendNavigationEntry(chain, details.url, timestamp, "navegação");
+  appendNavigationEntry(chain, details.redirectUrl, timestamp, "redirecionamento");
+  chain.redirects.push({
+    fromUrl: redactIdentifierParameters(details.url),
+    fromDomain: registrableDomainFromUrl(details.url),
+    toUrl: redactIdentifierParameters(details.redirectUrl),
+    toDomain: registrableDomainFromUrl(details.redirectUrl),
+    timestamp,
+    statusCode: details.statusCode,
+    automatic: true,
+  });
+
+  const state = tabStates.get(details.tabId);
+  if (state) {
+    state.navigationChain = chain;
+  }
+}
+
+async function hashIdentifierValue(value) {
+  try {
+    if (!globalThis.crypto?.subtle || typeof TextEncoder !== "function") {
+      return "";
+    }
+
+    const bytes = new TextEncoder().encode(String(value));
+    const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(digest)]
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
+  } catch (_error) {
+    return "";
+  }
+}
+
+async function addIdentifierOccurrence(tabId, state, value, occurrence) {
+  const hash = await hashIdentifierValue(value);
+  if (!hash || tabStates.get(tabId) !== state) {
+    return;
+  }
+
+  const key = [
+    hash,
+    occurrence.source,
+    occurrence.domain,
+    occurrence.parameterName || "",
+  ].join("\n");
+
+  if (state.identifierOccurrenceKeys.has(key)) {
+    return;
+  }
+
+  state.identifierOccurrenceKeys.add(key);
+  state.identifierOccurrences.push({
+    hash,
+    source: occurrence.source,
+    domain: occurrence.domain,
+    parameterName: occurrence.parameterName || "",
+    rule: occurrence.rule || "",
+    timestamp: Date.now(),
+  });
+}
+
+function analyzeThirdPartyQuery(tabId, state, request) {
+  if (!request.isThirdParty || !request.registrableDomain) {
+    return;
+  }
+
+  const parsedUrl = parseUrl(request.url);
+  if (!parsedUrl) {
+    return;
+  }
+
+  parsedUrl.searchParams.forEach((value, name) => {
+    const classification = classifyIdentifierParameter(name, value);
+    if (!classification.isCandidate) {
+      return;
+    }
+
+    addIdentifierOccurrence(tabId, state, value, {
+      source: "query",
+      domain: request.registrableDomain,
+      parameterName: classification.parameterName,
+      rule: classification.rule,
+    });
+  });
+}
+
+function analyzeCookieIdentifier(tabId, state, cookie, cookieDomain) {
+  const classification = classifyIdentifierParameter(cookie.name, cookie.value);
+  if (!classification.isCandidate || !cookieDomain) {
+    return;
+  }
+
+  let normalizedValue = String(cookie.value || "");
+  try {
+    normalizedValue = decodeURIComponent(normalizedValue);
+  } catch (_error) {
+    // Mantém a representação original se não houver encoding válido.
+  }
+
+  addIdentifierOccurrence(tabId, state, normalizedValue, {
+    source: "cookie",
+    domain: cookieDomain,
+    parameterName: "",
+    rule: classification.rule,
+  });
 }
 
 function createCookieRecord(cookie, state, changeInfo = null) {
@@ -165,6 +340,12 @@ function snapshotCookiesForHostname(tabId, state, hostname) {
           !state.cookies.changed.has(key)
         ) {
           state.cookies.preexisting.set(key, record);
+          analyzeCookieIdentifier(
+            tabId,
+            state,
+            cookie,
+            record.registrableDomain
+          );
         }
       });
     })
@@ -181,7 +362,7 @@ function recordCookieChange(changeInfo) {
     return;
   }
 
-  tabStates.forEach((state) => {
+  tabStates.forEach((state, tabId) => {
     if (state.cookieStoreId && cookie.storeId !== state.cookieStoreId) {
       return;
     }
@@ -193,22 +374,23 @@ function recordCookieChange(changeInfo) {
       state.observedDomains.has(record.registrableDomain)
     ) {
       state.cookies.changed.set(cookieKey(cookie), record);
+      analyzeCookieIdentifier(
+        tabId,
+        state,
+        cookie,
+        record.registrableDomain
+      );
     }
   });
 }
 
 function recordRequest(details) {
-  console.info("[Privacy Auditor] onBeforeRequest", {
-    tabId: details.tabId,
-    type: details.type,
-    requestId: details.requestId,
-    url: details.url,
-  });
-
   if (details.tabId === -1) {
     return;
   }
 
+  const navigationChain =
+    details.type === "main_frame" ? recordMainFrameNavigation(details) : null;
   let state = tabStates.get(details.tabId);
 
   // Um requestId pode reaparecer em redirecionamentos. Nesse caso, ele não
@@ -220,6 +402,7 @@ function recordRequest(details) {
   if (details.type === "main_frame") {
     const previousState = state;
     state = startTabState(details.tabId, details.url);
+    state.navigationChain = navigationChain;
     preserveCurrentDocumentStorage(previousState, state, details);
   } else {
     const documentUrl = details.documentUrl || details.originUrl || details.url;
@@ -242,7 +425,7 @@ function recordRequest(details) {
     browser.publicSuffix
   );
   const request = {
-    url: details.url,
+    url: redactIdentifierParameters(details.url),
     hostname,
     registrableDomain: classification.resourceDomain,
     type: details.type || "other",
@@ -264,6 +447,10 @@ function recordRequest(details) {
     state.observedDomains.add(request.registrableDomain);
   }
   snapshotCookiesForHostname(details.tabId, state, hostname);
+  analyzeThirdPartyQuery(details.tabId, state, {
+    ...request,
+    url: details.url,
+  });
 }
 
 function sanitizeStorageArea(area) {
@@ -311,13 +498,6 @@ function getSenderOrigin(sender, reportedOrigin) {
 function incorporateStorageReport(message, sender) {
   const tabId = sender && sender.tab ? sender.tab.id : -1;
 
-  console.info("[Privacy Auditor] STORAGE_REPORT recebido", {
-    senderTabId: tabId,
-    messageTabId: message.tabId,
-    frameId: sender && sender.frameId,
-    origin: message.origin,
-  });
-
   if (!Number.isInteger(tabId) || tabId === -1) {
     return { accepted: false };
   }
@@ -341,6 +521,91 @@ function incorporateStorageReport(message, sender) {
   return { accepted: true };
 }
 
+function incorporateCanvasRead(message, sender) {
+  const tabId = sender && sender.tab ? sender.tab.id : -1;
+  if (!Number.isInteger(tabId) || tabId === -1) {
+    return { accepted: false };
+  }
+
+  const allowedMethods = new Set(["toDataURL", "toBlob", "getImageData"]);
+  if (!allowedMethods.has(message.method)) {
+    return { accepted: false };
+  }
+
+  const frameId = Number.isInteger(sender.frameId) ? sender.frameId : -1;
+  const state = getOrCreateTabState(tabId, sender.tab.url || sender.url || "");
+  state.canvasCalls.push({
+    method: message.method,
+    timestamp: Number.isFinite(message.timestamp)
+      ? message.timestamp
+      : Date.now(),
+    origin: getSenderOrigin(sender, message.origin),
+    frameId,
+    frame: frameId === 0 ? "principal" : "secundário",
+    documentId:
+      sender && typeof sender.documentId === "string" ? sender.documentId : "",
+    stack: Array.isArray(message.stack)
+      ? message.stack
+          .filter((line) => typeof line === "string")
+          .slice(0, 6)
+          .map((line) => line.slice(0, 300))
+      : [],
+    scriptUrl:
+      typeof message.scriptUrl === "string"
+        ? message.scriptUrl.slice(0, 500)
+        : "",
+  });
+
+  return { accepted: true };
+}
+
+function createBounceReport(chain) {
+  if (!chain) {
+    return {
+      detected: false,
+      chain: [],
+      redirects: [],
+      detections: [],
+    };
+  }
+
+  const detections = detectBounceTracking(
+    chain.redirects,
+    BOUNCE_INTERVAL_MS
+  ).map((detection) => ({
+    intermediateDomain: detection.intermediateDomain,
+    intervalMs: detection.intervalMs,
+    justification: detection.justification,
+    chain: chain.entries.map((entry) => ({ ...entry })),
+  }));
+
+  return {
+    detected: detections.length > 0,
+    chain: chain.entries.map((entry) => ({ ...entry })),
+    redirects: chain.redirects.map((redirect) => ({ ...redirect })),
+    detections,
+  };
+}
+
+function createIdentifierSharingReport(state) {
+  const detections = findIdentifierSharing(state.identifierOccurrences).map(
+    (detection) => ({
+      rule: detection.rule,
+      domains: [...detection.domains],
+      parameterTypes: [...detection.parameterTypes],
+      justification:
+        detection.rule === "mesmo hash em cookie e parâmetro de URL"
+          ? "um hash local idêntico apareceu em cookie e parâmetro de URL"
+          : "um hash local idêntico apareceu em terceiros diferentes",
+    })
+  );
+
+  return {
+    detected: detections.length > 0,
+    detections,
+  };
+}
+
 function createPublicReport(state) {
   if (!state) {
     return {
@@ -356,6 +621,17 @@ function createPublicReport(state) {
         preexisting: [],
         changed: [],
         errors: [],
+      },
+      canvas: {
+        detected: false,
+        totalCalls: 0,
+        methods: [],
+        calls: [],
+      },
+      bounceTracking: createBounceReport(null),
+      identifierSharing: {
+        detected: false,
+        detections: [],
       },
     };
   }
@@ -397,11 +673,27 @@ function createPublicReport(state) {
       })),
       errors: [...state.cookies.errors],
     },
+    canvas: {
+      detected: state.canvasCalls.length > 0,
+      totalCalls: state.canvasCalls.length,
+      methods: [...new Set(state.canvasCalls.map((call) => call.method))].sort(),
+      calls: state.canvasCalls.map((call) => ({
+        ...call,
+        stack: [...call.stack],
+      })),
+    },
+    bounceTracking: createBounceReport(state.navigationChain),
+    identifierSharing: createIdentifierSharingReport(state),
   };
 }
 
 browser.webRequest.onBeforeRequest.addListener(recordRequest, {
   urls: ["<all_urls>"],
+});
+
+browser.webRequest.onBeforeRedirect.addListener(recordMainFrameRedirect, {
+  urls: ["<all_urls>"],
+  types: ["main_frame"],
 });
 
 // Atualiza a URL final depois de redirecionamentos sem limpar as requisições
@@ -420,6 +712,7 @@ browser.cookies.onChanged.addListener(recordCookieChange);
 
 browser.tabs.onRemoved.addListener((tabId) => {
   tabStates.delete(tabId);
+  navigationChains.delete(tabId);
 });
 
 browser.runtime.onMessage.addListener((message, sender) => {
@@ -428,11 +721,6 @@ browser.runtime.onMessage.addListener((message, sender) => {
   }
 
   if (message.type === "GET_TAB_REPORT") {
-    console.info("[Privacy Auditor] GET_TAB_REPORT solicitado", {
-      tabId: message.tabId,
-      knownTabIds: [...tabStates.keys()],
-    });
-
     if (!Number.isInteger(message.tabId) || message.tabId === -1) {
       return Promise.resolve(createPublicReport());
     }
@@ -442,6 +730,10 @@ browser.runtime.onMessage.addListener((message, sender) => {
 
   if (message.type === "STORAGE_REPORT") {
     return Promise.resolve(incorporateStorageReport(message, sender));
+  }
+
+  if (message.type === "CANVAS_READ") {
+    return Promise.resolve(incorporateCanvasRead(message, sender));
   }
 
   return undefined;
