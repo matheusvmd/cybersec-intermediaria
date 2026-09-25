@@ -2,7 +2,7 @@
 
 Extensão acadêmica de privacidade para Firefox. O popup apresenta as
 requisições realizadas pela aba, os domínios registráveis de terceira parte e
-um inventário de armazenamento HTML5 por origem e frame.
+um inventário de armazenamento HTML5 e cookies relacionado à navegação.
 
 ## Funcionalidades atuais
 
@@ -14,9 +14,14 @@ um inventário de armazenamento HTML5 por origem e frame.
 - Lista nomes e versões de bancos IndexedDB quando `indexedDB.databases()` está
   disponível.
 - Inspeciona o frame principal e frames secundários acessíveis à extensão.
+- Consulta cookies preexistentes dos domínios observados e acompanha alterações
+  com `cookies.onChanged`.
+- Separa cookies preexistentes dos criados, alterados ou removidos durante a
+  navegação e os classifica por parte e duração.
+- Não armazena os valores de cookies, `localStorage` ou `sessionStorage`.
 
-O projeto ainda não inspeciona cookies ou canvas, não calcula score e não
-bloqueia requisições.
+O projeto ainda não inspeciona canvas, não calcula score e não bloqueia
+requisições.
 
 ## Carregar temporariamente no Firefox
 
@@ -43,11 +48,12 @@ Comandos disponíveis:
 
 ```sh
 npm run lint
+npm test
 npm run run
 npm run build
 ```
 
 - `lint` valida a extensão com `web-ext`.
+- `test` executa os testes unitários de classificação de domínios e cookies.
 - `run` inicia uma instância temporária do Firefox com a extensão carregada.
 - `build` gera o pacote em `web-ext-artifacts/`.
-

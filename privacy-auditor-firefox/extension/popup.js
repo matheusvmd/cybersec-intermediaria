@@ -11,8 +11,27 @@ const thirdPartyDomainsElement = document.querySelector("#third-party-domains");
 const noThirdPartiesElement = document.querySelector("#no-third-parties");
 const resourceTypesElement = document.querySelector("#resource-types");
 const noResourceTypesElement = document.querySelector("#no-resource-types");
+const requestDetailsElement = document.querySelector("#request-details");
+const noRequestsElement = document.querySelector("#no-requests");
 const storageOriginsElement = document.querySelector("#storage-origins");
 const noStorageElement = document.querySelector("#no-storage");
+const cookieErrorsElement = document.querySelector("#cookie-errors");
+const preexistingCookieCountElement = document.querySelector(
+  "#preexisting-cookie-count"
+);
+const preexistingCookiesElement = document.querySelector(
+  "#preexisting-cookies"
+);
+const noPreexistingCookiesElement = document.querySelector(
+  "#no-preexisting-cookies"
+);
+const changedCookieCountElement = document.querySelector(
+  "#changed-cookie-count"
+);
+const changedCookiesElement = document.querySelector("#changed-cookies");
+const noChangedCookiesElement = document.querySelector(
+  "#no-changed-cookies"
+);
 
 function getHostname(url) {
   try {
@@ -67,6 +86,50 @@ function renderResourceTypes(countsByType) {
     countElement.className = "type-count";
     item.append(name, countElement);
     resourceTypesElement.append(item);
+  });
+}
+
+function formatTimestamp(timestamp) {
+  if (!Number.isFinite(timestamp)) {
+    return "horário indisponível";
+  }
+
+  return new Date(timestamp).toLocaleTimeString("pt-BR");
+}
+
+function createRecord(titleText, lines) {
+  const record = document.createElement("article");
+  const title = document.createElement("p");
+  record.className = "record";
+  title.className = "record-title";
+  title.textContent = titleText;
+  record.append(title);
+
+  lines.forEach((line) => {
+    const metadata = document.createElement("p");
+    metadata.className = "record-meta";
+    metadata.textContent = line;
+    record.append(metadata);
+  });
+
+  return record;
+}
+
+function renderRequests(requests) {
+  const requestList = Array.isArray(requests) ? requests : [];
+  clearChildren(requestDetailsElement);
+  noRequestsElement.hidden = requestList.length > 0;
+
+  requestList.forEach((request) => {
+    const party = request.isThirdParty ? "terceira parte" : "primeira parte";
+    requestDetailsElement.append(
+      createRecord(request.url || "URL indisponível", [
+        `${request.type || "other"} · ${party}`,
+        `Domínio: ${request.registrableDomain || request.hostname || "—"}`,
+        `Frame ${request.frameId} · ${formatTimestamp(request.timestamp)}`,
+        `requestId: ${request.requestId || "—"}`,
+      ])
+    );
   });
 }
 
@@ -161,6 +224,80 @@ function renderStorage(reports) {
     });
 }
 
+function cookieDuration(cookie) {
+  if (cookie.isSession) {
+    return "sessão";
+  }
+
+  if (Number.isFinite(cookie.expirationDate)) {
+    return `persistente até ${new Date(
+      cookie.expirationDate * 1000
+    ).toLocaleString("pt-BR")}`;
+  }
+
+  return "persistente";
+}
+
+function renderCookieList(cookies, container, emptyElement, countElement) {
+  const cookieList = Array.isArray(cookies) ? cookies : [];
+  clearChildren(container);
+  countElement.textContent = String(cookieList.length);
+  emptyElement.hidden = cookieList.length > 0;
+
+  cookieList
+    .slice()
+    .sort((left, right) => {
+      const leftKey = `${left.domain}\n${left.name}\n${left.path}`;
+      const rightKey = `${right.domain}\n${right.name}\n${right.path}`;
+      return leftKey.localeCompare(rightKey);
+    })
+    .forEach((cookie) => {
+      const party = cookie.isThirdParty ? "terceira parte" : "primeira parte";
+      const attributes = [
+        cookie.secure ? "Secure" : "sem Secure",
+        cookie.httpOnly ? "HttpOnly" : "acessível a scripts",
+        `SameSite=${cookie.sameSite || "unspecified"}`,
+      ];
+
+      if (cookie.partitioned) {
+        attributes.push("particionado");
+      }
+
+      const lines = [
+        `${cookie.domain || "domínio indisponível"}${cookie.path || "/"}`,
+        `${party} · ${cookieDuration(cookie)}`,
+        attributes.join(" · "),
+      ];
+
+      if (cookie.cause && cookie.cause !== "snapshot") {
+        const action = cookie.removed ? "removido" : "criado ou alterado";
+        lines.push(`${action} · causa: ${cookie.cause}`);
+      }
+
+      container.append(createRecord(cookie.name || "(cookie sem nome)", lines));
+    });
+}
+
+function renderCookies(cookies) {
+  const report = cookies || {};
+  renderCookieList(
+    report.preexisting,
+    preexistingCookiesElement,
+    noPreexistingCookiesElement,
+    preexistingCookieCountElement
+  );
+  renderCookieList(
+    report.changed,
+    changedCookiesElement,
+    noChangedCookiesElement,
+    changedCookieCountElement
+  );
+
+  const errors = Array.isArray(report.errors) ? report.errors : [];
+  cookieErrorsElement.textContent = errors.join(" ");
+  cookieErrorsElement.hidden = errors.length === 0;
+}
+
 function renderReport(report, fallbackUrl) {
   const url = report.url || fallbackUrl || "";
   const mainDomain =
@@ -175,12 +312,18 @@ function renderReport(report, fallbackUrl) {
   totalRequestsElement.textContent = String(totalRequests);
   renderThirdParties(report.thirdPartyDomains);
   renderResourceTypes(report.countsByType);
+  renderRequests(report.requests);
   renderStorage(report.storage);
+  renderCookies(report.cookies);
 
   reportElement.hidden = false;
   contentElement.setAttribute("aria-busy", "false");
 
-  const hasData = totalRequests > 0 || (report.storage || []).length > 0;
+  const cookieCount =
+    ((report.cookies && report.cookies.preexisting) || []).length +
+    ((report.cookies && report.cookies.changed) || []).length;
+  const hasData =
+    totalRequests > 0 || (report.storage || []).length > 0 || cookieCount > 0;
   if (!hasData) {
     setStatus(
       getHostname(url)
@@ -215,4 +358,3 @@ async function loadActiveTabReport() {
 }
 
 loadActiveTabReport();
-

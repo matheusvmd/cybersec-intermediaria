@@ -1,6 +1,13 @@
 "use strict";
 
 const tabStates = new Map();
+const {
+  classifyCookie,
+  classifyDomain,
+  cookieKey,
+  getRegistrableDomain,
+  normalizeHostname,
+} = globalThis.PrivacyUtils;
 
 console.info("[Privacy Auditor] background.js iniciado");
 
@@ -12,77 +19,30 @@ function parseUrl(url) {
   }
 }
 
-function normalizeHostname(hostname) {
-  return String(hostname || "").toLowerCase().replace(/\.$/, "");
-}
-
-function isIpAddress(hostname) {
-  const normalized = normalizeHostname(hostname).replace(/^\[|\]$/g, "");
-
-  if (normalized.includes(":")) {
-    return true;
-  }
-
-  const parts = normalized.split(".");
-  return (
-    parts.length === 4 &&
-    parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255)
-  );
-}
-
-function fallbackRegistrableDomain(hostname) {
-  const normalized = normalizeHostname(hostname);
-
-  if (!normalized || normalized === "localhost" || isIpAddress(normalized)) {
-    return normalized;
-  }
-
-  const labels = normalized.split(".");
-  return labels.length > 2 ? labels.slice(-2).join(".") : normalized;
-}
-
-function getRegistrableDomain(hostname) {
-  const normalized = normalizeHostname(hostname);
-
-  if (!normalized || normalized === "localhost" || isIpAddress(normalized)) {
-    return normalized;
-  }
-
-  try {
-    if (
-      browser.publicSuffix &&
-      typeof browser.publicSuffix.getDomain === "function"
-    ) {
-      const domain = browser.publicSuffix.getDomain(normalized);
-      if (domain) {
-        return normalizeHostname(domain);
-      }
-    }
-  } catch (error) {
-    console.warn(
-      "[Privacy Auditor] publicSuffix.getDomain falhou; usando hostname",
-      normalized,
-      error
-    );
-  }
-
-  return normalized;
-}
-
 function createTabState(url = "") {
   const parsedUrl = parseUrl(url);
   const hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
   const state = {
     url,
     hostname,
-    registrableDomain: fallbackRegistrableDomain(hostname),
+    registrableDomain: getRegistrableDomain(hostname, browser.publicSuffix),
     requests: [],
     requestIds: new Set(),
     countsByType: Object.create(null),
     storageReports: new Map(),
+    observedDomains: new Set(),
+    cookieStoreId: "",
+    cookies: {
+      preexisting: new Map(),
+      changed: new Map(),
+      scannedHosts: new Set(),
+      errors: [],
+    },
   };
 
-  state.registrableDomain = getRegistrableDomain(hostname);
+  if (state.registrableDomain) {
+    state.observedDomains.add(state.registrableDomain);
+  }
 
   return state;
 }
@@ -129,7 +89,112 @@ function updateMainDocument(state, url) {
   const parsedUrl = parseUrl(url);
   state.url = url;
   state.hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
-  state.registrableDomain = getRegistrableDomain(state.hostname);
+  state.registrableDomain = getRegistrableDomain(
+    state.hostname,
+    browser.publicSuffix
+  );
+
+  if (state.registrableDomain) {
+    state.observedDomains.add(state.registrableDomain);
+  }
+}
+
+function createCookieRecord(cookie, state, changeInfo = null) {
+  const classification = classifyCookie(
+    cookie,
+    state.hostname,
+    browser.publicSuffix
+  );
+
+  return {
+    name: String(cookie.name || ""),
+    domain: classification.domain,
+    registrableDomain: classification.registrableDomain,
+    path: String(cookie.path || "/"),
+    storeId: String(cookie.storeId || ""),
+    secure: Boolean(cookie.secure),
+    httpOnly: Boolean(cookie.httpOnly),
+    sameSite: String(cookie.sameSite || "unspecified"),
+    expirationDate: Number.isFinite(cookie.expirationDate)
+      ? cookie.expirationDate
+      : null,
+    isSession: classification.isSession,
+    isThirdParty: classification.isThirdParty,
+    partitioned: Boolean(cookie.partitionKey),
+    firstPartyDomain: String(cookie.firstPartyDomain || ""),
+    removed: Boolean(changeInfo && changeInfo.removed),
+    cause: changeInfo ? String(changeInfo.cause || "unknown") : "snapshot",
+    timestamp: Date.now(),
+  };
+}
+
+function addCookieError(state, hostname) {
+  const message = `Não foi possível consultar cookies de ${hostname}.`;
+  if (!state.cookies.errors.includes(message)) {
+    state.cookies.errors.push(message);
+  }
+}
+
+function snapshotCookiesForHostname(tabId, state, hostname) {
+  const normalized = normalizeHostname(hostname);
+
+  if (!normalized || state.cookies.scannedHosts.has(normalized)) {
+    return;
+  }
+
+  state.cookies.scannedHosts.add(normalized);
+  const query = { domain: normalized };
+  if (state.cookieStoreId) {
+    query.storeId = state.cookieStoreId;
+  }
+
+  browser.cookies
+    .getAll(query)
+    .then((cookies) => {
+      if (tabStates.get(tabId) !== state) {
+        return;
+      }
+
+      cookies.forEach((cookie) => {
+        const record = createCookieRecord(cookie, state);
+        const key = cookieKey(cookie);
+
+        if (
+          record.registrableDomain &&
+          state.observedDomains.has(record.registrableDomain) &&
+          !state.cookies.changed.has(key)
+        ) {
+          state.cookies.preexisting.set(key, record);
+        }
+      });
+    })
+    .catch(() => {
+      if (tabStates.get(tabId) === state) {
+        addCookieError(state, normalized);
+      }
+    });
+}
+
+function recordCookieChange(changeInfo) {
+  const cookie = changeInfo && changeInfo.cookie;
+  if (!cookie) {
+    return;
+  }
+
+  tabStates.forEach((state) => {
+    if (state.cookieStoreId && cookie.storeId !== state.cookieStoreId) {
+      return;
+    }
+
+    const record = createCookieRecord(cookie, state, changeInfo);
+
+    if (
+      record.registrableDomain &&
+      state.observedDomains.has(record.registrableDomain)
+    ) {
+      state.cookies.changed.set(cookieKey(cookie), record);
+    }
+  });
 }
 
 function recordRequest(details) {
@@ -161,36 +226,44 @@ function recordRequest(details) {
     state = getOrCreateTabState(details.tabId, documentUrl);
   }
 
+  if (!state.cookieStoreId && details.cookieStoreId) {
+    state.cookieStoreId = details.cookieStoreId;
+  }
+
   if (state.requestIds.has(details.requestId)) {
     return;
   }
 
   const parsedUrl = parseUrl(details.url);
   const hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
+  const classification = classifyDomain(
+    state.hostname,
+    hostname,
+    browser.publicSuffix
+  );
   const request = {
     url: details.url,
     hostname,
-    registrableDomain: getRegistrableDomain(hostname),
+    registrableDomain: classification.resourceDomain,
     type: details.type || "other",
     requestId: details.requestId,
     frameId: details.frameId,
     timestamp: Number.isFinite(details.timeStamp)
       ? details.timeStamp
       : Date.now(),
-    isThirdParty: false,
+    isThirdParty:
+      details.type === "main_frame" ? false : classification.isThirdParty,
   };
-
-  request.isThirdParty = Boolean(
-    request.type !== "main_frame" &&
-      state.registrableDomain &&
-      request.registrableDomain &&
-      state.registrableDomain !== request.registrableDomain
-  );
 
   state.requestIds.add(details.requestId);
   state.requests.push(request);
   state.countsByType[request.type] =
     (state.countsByType[request.type] || 0) + 1;
+
+  if (request.registrableDomain) {
+    state.observedDomains.add(request.registrableDomain);
+  }
+  snapshotCookiesForHostname(details.tabId, state, hostname);
 }
 
 function sanitizeStorageArea(area) {
@@ -279,6 +352,11 @@ function createPublicReport(state) {
       thirdPartyDomains: [],
       countsByType: {},
       storage: [],
+      cookies: {
+        preexisting: [],
+        changed: [],
+        errors: [],
+      },
     };
   }
 
@@ -310,6 +388,15 @@ function createPublicReport(state) {
         })),
       },
     })),
+    cookies: {
+      preexisting: [...state.cookies.preexisting.values()].map((cookie) => ({
+        ...cookie,
+      })),
+      changed: [...state.cookies.changed.values()].map((cookie) => ({
+        ...cookie,
+      })),
+      errors: [...state.cookies.errors],
+    },
   };
 }
 
@@ -326,7 +413,10 @@ browser.webNavigation.onCommitted.addListener((details) => {
 
   const state = getOrCreateTabState(details.tabId, details.url);
   updateMainDocument(state, details.url);
+  snapshotCookiesForHostname(details.tabId, state, state.hostname);
 });
+
+browser.cookies.onChanged.addListener(recordCookieChange);
 
 browser.tabs.onRemoved.addListener((tabId) => {
   tabStates.delete(tabId);

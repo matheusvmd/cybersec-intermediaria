@@ -45,9 +45,36 @@
         </section>
 
         <section>
+          <details>
+            <summary>Detalhes das requisições</summary>
+            <p id="no-requests" class="empty">Nenhuma requisição registrada.</p>
+            <div id="request-details" class="record-list"></div>
+          </details>
+        </section>
+
+        <section>
           <h2>Armazenamento HTML5</h2>
           <p id="no-storage" class="empty">Nenhum relatório de armazenamento disponível.</p>
           <div id="storage-origins"></div>
+        </section>
+
+        <section>
+          <h2>Cookies</h2>
+          <p id="cookie-errors" class="notice" hidden></p>
+
+          <h3>
+            Preexistentes
+            <span id="preexisting-cookie-count" class="badge">0</span>
+          </h3>
+          <p id="no-preexisting-cookies" class="empty">Nenhum cookie encontrado.</p>
+          <div id="preexisting-cookies" class="record-list"></div>
+
+          <h3 class="subsection-title">
+            Criados ou alterados nesta navegação
+            <span id="changed-cookie-count" class="badge">0</span>
+          </h3>
+          <p id="no-changed-cookies" class="empty">Nenhuma alteração observada.</p>
+          <div id="changed-cookies" class="record-list"></div>
         </section>
       </div>
     </main>
@@ -55,4 +82,3 @@
     <script src="popup.js"></script>
   </body>
 </html>
-

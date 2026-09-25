@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "web-ext lint --source-dir extension",
+    "test": "node --test tests/*.test.js",
     "run": "web-ext run --source-dir extension",
     "build": "web-ext build --source-dir extension --artifacts-dir web-ext-artifacts --overwrite-dest"
   },

@@ -25,6 +25,17 @@ h2 {
   font-size: 0.95rem;
 }
 
+h3 {
+  margin: 12px 0 8px;
+  font-size: 0.85rem;
+}
+
+summary {
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 section {
   margin-top: 18px;
   padding-top: 14px;
@@ -109,6 +120,35 @@ dd {
   border-radius: 8px;
 }
 
+.record-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.record {
+  padding: 9px;
+  border: 1px solid color-mix(in srgb, CanvasText 14%, transparent);
+  border-radius: 7px;
+  font-size: 0.8rem;
+}
+
+.record-title {
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.record-meta {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+  opacity: 0.78;
+}
+
+.subsection-title {
+  margin-top: 16px;
+}
+
 .origin-title {
   margin: 0 0 8px;
   font-size: 0.88rem;
@@ -135,14 +175,20 @@ dd {
 }
 
 .empty,
-.status {
+.status,
+.notice {
   margin: 0;
   font-size: 0.82rem;
   opacity: 0.72;
+}
+
+.notice {
+  margin-bottom: 8px;
+  color: #b66a00;
+  opacity: 1;
 }
 
 .status--error {
   color: #c33;
   opacity: 1;
 }
-
