@@ -2,18 +2,40 @@
 
 const tabStates = new Map();
 const {
+  calculatePrivacyScore,
   classifyCookie,
   classifyDomain,
   classifyIdentifierParameter,
   cookieKey,
   detectBounceTracking,
+  detectPersistentPolling,
   findIdentifierSharing,
   getRegistrableDomain,
+  matchesBlockDomain,
+  normalizeBlockDomain,
   normalizeHostname,
   redactIdentifierParameters,
 } = globalThis.PrivacyUtils;
 const navigationChains = new Map();
 const BOUNCE_INTERVAL_MS = 3000;
+const blockSettings = {
+  enabled: false,
+  domains: new Set(),
+};
+
+const blockSettingsReady = browser.storage.local
+  .get({ blockingEnabled: false, blockedDomains: [] })
+  .then((stored) => {
+    blockSettings.enabled = Boolean(stored.blockingEnabled);
+    blockSettings.domains = new Set(
+      (Array.isArray(stored.blockedDomains) ? stored.blockedDomains : [])
+        .map(normalizeBlockDomain)
+        .filter(Boolean)
+    );
+  })
+  .catch(() => {
+    // A extensão continua funcionando com bloqueio desativado.
+  });
 
 function parseUrl(url) {
   try {
@@ -35,6 +57,14 @@ function createTabState(url = "") {
     countsByType: Object.create(null),
     storageReports: new Map(),
     canvasCalls: [],
+    hijacking: {
+      networkCalls: [],
+      thirdPartyWebSockets: [],
+      hookReplacements: [],
+      dynamicScripts: [],
+    },
+    blockMatches: [],
+    blockMatchIds: new Set(),
     identifierOccurrences: [],
     identifierOccurrenceKeys: new Set(),
     observedDomains: new Set(),
@@ -384,6 +414,51 @@ function recordCookieChange(changeInfo) {
   });
 }
 
+function matchingBlockedDomain(hostname) {
+  for (const blockedDomain of blockSettings.domains) {
+    if (matchesBlockDomain(hostname, blockedDomain)) {
+      return blockedDomain;
+    }
+  }
+  return "";
+}
+
+function evaluateBlockRequest(details) {
+  if (details.tabId === -1) {
+    return {};
+  }
+
+  const parsedUrl = parseUrl(details.url);
+  const hostname = parsedUrl ? normalizeHostname(parsedUrl.hostname) : "";
+  const matchedDomain = matchingBlockedDomain(hostname);
+  if (!matchedDomain) {
+    return {};
+  }
+
+  const documentUrl = details.documentUrl || details.originUrl || details.url;
+  const state = getOrCreateTabState(details.tabId, documentUrl);
+  const key = `${details.requestId}\n${matchedDomain}`;
+  const blocked = blockSettings.enabled;
+
+  if (!state.blockMatchIds.has(key)) {
+    state.blockMatchIds.add(key);
+    state.blockMatches.push({
+      url: redactIdentifierParameters(details.url),
+      hostname,
+      matchedDomain,
+      type: details.type || "other",
+      requestId: String(details.requestId || ""),
+      timestamp: Number.isFinite(details.timeStamp)
+        ? details.timeStamp
+        : Date.now(),
+      detected: true,
+      blocked,
+    });
+  }
+
+  return blocked ? { cancel: true } : {};
+}
+
 function recordRequest(details) {
   if (details.tabId === -1) {
     return;
@@ -401,8 +476,17 @@ function recordRequest(details) {
 
   if (details.type === "main_frame") {
     const previousState = state;
+    const currentBlockMatches = previousState
+      ? previousState.blockMatches.filter(
+          (match) => match.requestId === String(details.requestId || "")
+        )
+      : [];
     state = startTabState(details.tabId, details.url);
     state.navigationChain = navigationChain;
+    currentBlockMatches.forEach((match) => {
+      state.blockMatches.push(match);
+      state.blockMatchIds.add(`${match.requestId}\n${match.matchedDomain}`);
+    });
     preserveCurrentDocumentStorage(previousState, state, details);
   } else {
     const documentUrl = details.documentUrl || details.originUrl || details.url;
@@ -559,6 +643,166 @@ function incorporateCanvasRead(message, sender) {
   return { accepted: true };
 }
 
+function pageObservationMetadata(message, sender) {
+  const frameId = Number.isInteger(sender.frameId) ? sender.frameId : -1;
+  return {
+    timestamp: Number.isFinite(message.timestamp)
+      ? message.timestamp
+      : Date.now(),
+    origin: getSenderOrigin(sender, message.origin),
+    frameId,
+    frame: frameId === 0 ? "principal" : "secundário",
+    stack: Array.isArray(message.stack)
+      ? message.stack
+          .filter((line) => typeof line === "string")
+          .slice(0, 6)
+          .map((line) => line.slice(0, 300))
+      : [],
+    scriptUrl: redactIdentifierParameters(
+      typeof message.scriptUrl === "string" ? message.scriptUrl.slice(0, 500) : ""
+    ),
+  };
+}
+
+function resolveObservedUrl(url, senderUrl) {
+  try {
+    return new URL(String(url || ""), senderUrl || undefined);
+  } catch (_error) {
+    return null;
+  }
+}
+
+function incorporatePageObservation(message, sender) {
+  const tabId = sender && sender.tab ? sender.tab.id : -1;
+  if (!Number.isInteger(tabId) || tabId === -1) {
+    return { accepted: false };
+  }
+
+  if (message.kind === "canvas_read") {
+    return incorporateCanvasRead(message, sender);
+  }
+
+  const state = getOrCreateTabState(tabId, sender.tab.url || sender.url || "");
+  const metadata = pageObservationMetadata(message, sender);
+
+  if (message.kind === "hook_replaced") {
+    const target = String(message.target || "").slice(0, 120);
+    if (!target) {
+      return { accepted: false };
+    }
+    state.hijacking.hookReplacements.push({ target, ...metadata });
+    return { accepted: true };
+  }
+
+  if (message.kind === "websocket") {
+    const parsedUrl = resolveObservedUrl(message.url, sender.url);
+    if (!parsedUrl || !["ws:", "wss:"].includes(parsedUrl.protocol)) {
+      return { accepted: false };
+    }
+    const classification = classifyDomain(
+      state.hostname,
+      parsedUrl.hostname,
+      browser.publicSuffix
+    );
+    if (classification.isThirdParty) {
+      state.hijacking.thirdPartyWebSockets.push({
+        url: redactIdentifierParameters(parsedUrl.href),
+        domain: classification.resourceDomain,
+        justification: "WebSocket aberto para domínio registrável diferente",
+        ...metadata,
+      });
+    }
+    return { accepted: true };
+  }
+
+  if (message.kind === "network_api_call") {
+    const parsedUrl = resolveObservedUrl(message.url, sender.url);
+    const api = ["fetch", "XMLHttpRequest.open"].includes(message.api)
+      ? message.api
+      : "";
+    if (!parsedUrl || !api || !["http:", "https:"].includes(parsedUrl.protocol)) {
+      return { accepted: false };
+    }
+    state.hijacking.networkCalls.push({
+      api,
+      endpoint: `${parsedUrl.origin}${parsedUrl.pathname}`.slice(0, 2048),
+      domain: registrableDomainFromUrl(parsedUrl.href),
+      method: String(message.method || "GET").slice(0, 20),
+      ...metadata,
+    });
+    return { accepted: true };
+  }
+
+  if (message.kind === "dynamic_script") {
+    const parsedUrl = message.url
+      ? resolveObservedUrl(message.url, sender.url)
+      : null;
+    const classification = parsedUrl
+      ? classifyDomain(state.hostname, parsedUrl.hostname, browser.publicSuffix)
+      : { resourceDomain: "", isThirdParty: false };
+    state.hijacking.dynamicScripts.push({
+      url: parsedUrl ? redactIdentifierParameters(parsedUrl.href) : "",
+      domain: classification.resourceDomain,
+      isThirdParty: classification.isThirdParty,
+      inline: Boolean(message.inline),
+      module: Boolean(message.module),
+      async: Boolean(message.async),
+      assessment:
+        "script dinâmico observado; isoladamente não caracteriza ataque",
+      ...metadata,
+    });
+    return { accepted: true };
+  }
+
+  return { accepted: false };
+}
+
+function createHijackingReport(state) {
+  const callsByEndpoint = new Map();
+  state.hijacking.networkCalls.forEach((call) => {
+    const key = `${call.api}\n${call.method}\n${call.endpoint}`;
+    const calls = callsByEndpoint.get(key) || [];
+    calls.push(call);
+    callsByEndpoint.set(key, calls);
+  });
+  const polling = [];
+  callsByEndpoint.forEach((calls) => {
+    const detection = detectPersistentPolling(calls);
+    if (detection.detected) {
+      polling.push({
+        detected: true,
+        api: calls[0].api,
+        method: calls[0].method,
+        endpoint: calls[0].endpoint,
+        domain: calls[0].domain,
+        callCount: detection.callCount,
+        averageIntervalMs: detection.averageIntervalMs,
+        justification: detection.justification,
+      });
+    }
+  });
+
+  return {
+    detected:
+      state.hijacking.thirdPartyWebSockets.length > 0 ||
+      state.hijacking.hookReplacements.length > 0 ||
+      polling.length > 0,
+    thirdPartyWebSockets: state.hijacking.thirdPartyWebSockets.map((item) => ({
+      ...item,
+      stack: [...item.stack],
+    })),
+    polling,
+    hookReplacements: state.hijacking.hookReplacements.map((item) => ({
+      ...item,
+      stack: [...item.stack],
+    })),
+    dynamicScripts: state.hijacking.dynamicScripts.map((item) => ({
+      ...item,
+      stack: [...item.stack],
+    })),
+  };
+}
+
 function createBounceReport(chain) {
   if (!chain) {
     return {
@@ -608,7 +852,7 @@ function createIdentifierSharingReport(state) {
 
 function createPublicReport(state) {
   if (!state) {
-    return {
+    const emptyReport = {
       url: "",
       hostname: "",
       registrableDomain: "",
@@ -633,7 +877,22 @@ function createPublicReport(state) {
         detected: false,
         detections: [],
       },
+      hijacking: {
+        detected: false,
+        thirdPartyWebSockets: [],
+        polling: [],
+        hookReplacements: [],
+        dynamicScripts: [],
+      },
+      blocking: {
+        enabled: blockSettings.enabled,
+        domains: [...blockSettings.domains].sort(),
+        detected: [],
+        blocked: [],
+      },
     };
+    emptyReport.score = calculatePrivacyScore(emptyReport);
+    return emptyReport;
   }
 
   const thirdPartyDomains = [
@@ -645,7 +904,7 @@ function createPublicReport(state) {
     ),
   ].sort();
 
-  return {
+  const report = {
     url: state.url,
     hostname: state.hostname,
     registrableDomain: state.registrableDomain,
@@ -684,8 +943,25 @@ function createPublicReport(state) {
     },
     bounceTracking: createBounceReport(state.navigationChain),
     identifierSharing: createIdentifierSharingReport(state),
+    hijacking: createHijackingReport(state),
+    blocking: {
+      enabled: blockSettings.enabled,
+      domains: [...blockSettings.domains].sort(),
+      detected: state.blockMatches.map((match) => ({ ...match })),
+      blocked: state.blockMatches
+        .filter((match) => match.blocked)
+        .map((match) => ({ ...match })),
+    },
   };
+  report.score = calculatePrivacyScore(report);
+  return report;
 }
+
+browser.webRequest.onBeforeRequest.addListener(
+  evaluateBlockRequest,
+  { urls: ["<all_urls>"] },
+  ["blocking"]
+);
 
 browser.webRequest.onBeforeRequest.addListener(recordRequest, {
   urls: ["<all_urls>"],
@@ -715,6 +991,20 @@ browser.tabs.onRemoved.addListener((tabId) => {
   navigationChains.delete(tabId);
 });
 
+function persistBlockSettings() {
+  return browser.storage.local.set({
+    blockingEnabled: blockSettings.enabled,
+    blockedDomains: [...blockSettings.domains].sort(),
+  });
+}
+
+function publicBlockSettings() {
+  return {
+    enabled: blockSettings.enabled,
+    domains: [...blockSettings.domains].sort(),
+  };
+}
+
 browser.runtime.onMessage.addListener((message, sender) => {
   if (!message || typeof message.type !== "string") {
     return undefined;
@@ -722,10 +1012,12 @@ browser.runtime.onMessage.addListener((message, sender) => {
 
   if (message.type === "GET_TAB_REPORT") {
     if (!Number.isInteger(message.tabId) || message.tabId === -1) {
-      return Promise.resolve(createPublicReport());
+      return blockSettingsReady.then(() => createPublicReport());
     }
 
-    return Promise.resolve(createPublicReport(tabStates.get(message.tabId)));
+    return blockSettingsReady.then(() =>
+      createPublicReport(tabStates.get(message.tabId))
+    );
   }
 
   if (message.type === "STORAGE_REPORT") {
@@ -734,6 +1026,69 @@ browser.runtime.onMessage.addListener((message, sender) => {
 
   if (message.type === "CANVAS_READ") {
     return Promise.resolve(incorporateCanvasRead(message, sender));
+  }
+
+  if (message.type === "PAGE_OBSERVATION") {
+    return Promise.resolve(incorporatePageObservation(message, sender));
+  }
+
+  if (message.type === "CLEAR_TAB_DATA") {
+    if (Number.isInteger(message.tabId) && message.tabId !== -1) {
+      tabStates.delete(message.tabId);
+      navigationChains.delete(message.tabId);
+    }
+    return Promise.resolve(createPublicReport());
+  }
+
+  if (message.type === "GET_BLOCK_SETTINGS") {
+    return blockSettingsReady.then(publicBlockSettings);
+  }
+
+  if (message.type === "SET_BLOCKING_ENABLED") {
+    return blockSettingsReady.then(() => {
+      blockSettings.enabled = Boolean(message.enabled);
+      return persistBlockSettings().then(publicBlockSettings);
+    });
+  }
+
+  if (message.type === "ADD_BLOCK_DOMAIN") {
+    const domain = normalizeBlockDomain(message.domain);
+    if (!domain) {
+      return blockSettingsReady.then(() => ({
+        ...publicBlockSettings(),
+        error: "Domínio inválido.",
+      }));
+    }
+    return blockSettingsReady.then(() => {
+      blockSettings.domains.add(domain);
+      return persistBlockSettings().then(publicBlockSettings);
+    });
+  }
+
+  if (message.type === "REMOVE_BLOCK_DOMAIN") {
+    const domain = normalizeBlockDomain(message.domain);
+    return blockSettingsReady.then(() => {
+      if (domain) {
+        blockSettings.domains.delete(domain);
+      }
+      return persistBlockSettings().then(publicBlockSettings);
+    });
+  }
+
+  if (message.type === "UPDATE_BLOCK_DOMAIN") {
+    const previousDomain = normalizeBlockDomain(message.previousDomain);
+    const domain = normalizeBlockDomain(message.domain);
+    if (!previousDomain || !domain) {
+      return blockSettingsReady.then(() => ({
+        ...publicBlockSettings(),
+        error: "Domínio inválido.",
+      }));
+    }
+    return blockSettingsReady.then(() => {
+      blockSettings.domains.delete(previousDomain);
+      blockSettings.domains.add(domain);
+      return persistBlockSettings().then(publicBlockSettings);
+    });
   }
 
   return undefined;

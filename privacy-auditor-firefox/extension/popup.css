@@ -182,6 +182,69 @@ dd {
   opacity: 0.72;
 }
 
+button,
+input {
+  font: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 6px;
+  background: ButtonFace;
+  color: ButtonText;
+  cursor: pointer;
+}
+
+#clear-tab-data {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.88rem;
+}
+
+.control-row {
+  display: flex;
+  gap: 6px;
+}
+
+.control-row input {
+  min-width: 0;
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 6px;
+  background: Field;
+  color: FieldText;
+}
+
+.domain-controls {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.domain-controls li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  overflow-wrap: anywhere;
+  font-size: 0.84rem;
+}
+
+.domain-controls li > span:last-child {
+  display: flex;
+  gap: 4px;
+}
+
 .detection-status {
   display: inline-block;
   margin: 0 0 8px;

@@ -27,7 +27,21 @@
             <dt>Total de requisições</dt>
             <dd id="total-requests" class="number">0</dd>
           </div>
+          <div class="metric">
+            <dt>Score de privacidade</dt>
+            <dd><span id="privacy-score" class="number">—</span>/100</dd>
+          </div>
         </dl>
+
+        <button id="clear-tab-data" type="button">Limpar dados desta aba</button>
+
+        <section>
+          <h2>Visão geral do score</h2>
+          <p class="empty">
+            Heurística baseada somente nos sinais observados nesta navegação.
+          </p>
+          <div id="score-discounts" class="record-list"></div>
+        </section>
 
         <section>
           <h2>
@@ -99,6 +113,46 @@
             Nenhum possível compartilhamento de identificador observado.
           </p>
           <div id="identifier-detections" class="record-list"></div>
+        </section>
+
+        <section>
+          <h2>Hijacking e hooks</h2>
+          <p id="hijacking-status" class="detection-status">Não detectado</p>
+          <p id="hijacking-summary" class="empty">Nenhum indicador observado.</p>
+          <h3>WebSockets de terceiro</h3>
+          <div id="third-party-websockets" class="record-list"></div>
+          <h3>Polling persistente</h3>
+          <div id="polling-detections" class="record-list"></div>
+          <h3>Funções substituídas</h3>
+          <div id="hook-replacements" class="record-list"></div>
+          <details>
+            <summary>Scripts adicionados dinamicamente</summary>
+            <p class="empty">A presença isolada não caracteriza ataque.</p>
+            <div id="dynamic-scripts" class="record-list"></div>
+          </details>
+        </section>
+
+        <section>
+          <h2>Lista de bloqueio</h2>
+          <label class="toggle-row">
+            <input id="blocking-enabled" type="checkbox">
+            Bloqueio ativo
+          </label>
+          <form id="block-domain-form" class="control-row">
+            <input
+              id="block-domain-input"
+              type="text"
+              placeholder="tracker.example"
+              aria-label="Domínio a bloquear"
+            >
+            <button type="submit">Adicionar</button>
+          </form>
+          <p id="blocking-error" class="notice" hidden></p>
+          <ul id="blocked-domain-list" class="domain-controls"></ul>
+          <h3>Detectadas <span id="block-detected-count" class="badge">0</span></h3>
+          <div id="block-detected-list" class="record-list"></div>
+          <h3>Bloqueadas <span id="block-blocked-count" class="badge">0</span></h3>
+          <div id="block-blocked-list" class="record-list"></div>
         </section>
       </div>
     </main>

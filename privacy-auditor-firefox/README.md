@@ -21,7 +21,8 @@ possível compartilhamento de identificadores.
 - Separa cookies preexistentes dos criados, alterados ou removidos durante a
   navegação e os classifica por parte e duração.
 - Detecta leituras de canvas por `toDataURL`, `toBlob` e `getImageData` no
-  contexto principal da página, preservando a chamada original.
+  contexto principal da página, usando `Proxy` para preservar `this`,
+  argumentos, retorno e propriedades da função original.
 - Mantém a cadeia de redirects da navegação principal e sinaliza passagens
   automáticas e rápidas por um domínio intermediário distinto.
 - Analisa parâmetros de URLs de terceiros e compara somente hashes SHA-256
@@ -29,12 +30,44 @@ possível compartilhamento de identificadores.
   cookie e URL.
 - Oculta, nas URLs guardadas e exibidas, valores reconhecidos como possíveis
   identificadores, mantendo o nome do parâmetro e os demais componentes.
+- Observa WebSockets de terceiros, polling regular por `fetch`/XHR,
+  substituições das APIs monitoradas e scripts inseridos dinamicamente. Scripts
+  dinâmicos são inventariados, mas não são classificados isoladamente como
+  ataque.
+- Mantém uma lista personalizada de domínios em `browser.storage.local`, com
+  bloqueio opcional por `webRequestBlocking` e registros separados de
+  correspondências detectadas e requisições efetivamente canceladas.
+- Calcula um score heurístico por navegação e apresenta cada desconto aplicado.
 - Não armazena valores de cookies, parâmetros identificadores,
   `localStorage`, `sessionStorage` ou conteúdo de canvas.
 
-As detecções são indícios e podem ter falsos positivos. O projeto não calcula
-score, não instala hooks de hijacking, não bloqueia requisições e não envia os
-dados coletados para servidores externos.
+As detecções são indícios e podem ter falsos positivos. A extensão não altera
+os dados das páginas e não envia os dados coletados para servidores externos.
+
+## Metodologia do score
+
+O score começa em 100 e cada categoria aplica um desconto limitado ao peso
+máximo indicado. O resultado mínimo é zero. A lista personalizada de bloqueio
+não muda o score: ele representa os sinais observados na página, não a
+preferência de bloqueio do usuário.
+
+| Categoria | Peso máximo | Critério de desconto |
+| --- | ---: | --- |
+| Domínios de terceira parte | 20 | 2 pontos por domínio registrável distinto |
+| Cookies | 20 | 3 por cookie persistente de terceiro, 2 por cookie de sessão de terceiro e 1 por cookie persistente de primeira parte |
+| Armazenamento HTML5 | 10 | Por origem: 2 por localStorage, 1 por sessionStorage e 3 por IndexedDB com dados |
+| Canvas fingerprinting | 20 | 20 quando há tentativa de leitura do canvas |
+| Bounce tracking e cookie sync | 15 | 7 por possível bounce tracking e 8 por possível compartilhamento de identificador |
+| Hijacking e hooks | 15 | 8 por substituição de API, 4 por WebSocket de terceiro e 3 por polling persistente |
+
+Os descontos de cada categoria são aplicados uma única vez até o seu limite,
+mesmo que existam muitos eventos. O popup mostra os fatores que justificaram o
+resultado. Trata-se de uma comparação acadêmica e heurística, não de uma
+certificação de segurança ou privacidade.
+
+Polling persistente requer ao menos quatro chamadas recentes ao mesmo endpoint,
+com intervalos entre 250 ms e 60 s e desvio máximo de 35% em relação à média.
+Bounce tracking usa uma janela de três segundos entre redirects automáticos.
 
 ## Carregar temporariamente no Firefox
 
@@ -68,6 +101,6 @@ npm run build
 
 - `lint` valida a extensão com `web-ext`.
 - `test` executa os testes unitários de domínios, cookies, parâmetros
-  identificadores e bounce tracking.
+  identificadores, bounce tracking, polling, bloqueio e score.
 - `run` inicia uma instância temporária do Firefox com a extensão carregada.
 - `build` gera o pacote em `web-ext-artifacts/`.

@@ -4,9 +4,13 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  calculatePrivacyScore,
   classifyIdentifierParameter,
   detectBounceTracking,
+  detectPersistentPolling,
   findIdentifierSharing,
+  matchesBlockDomain,
+  normalizeBlockDomain,
   redactIdentifierParameters,
 } = require("../extension/privacy-utils.js");
 
@@ -163,4 +167,80 @@ test("não marca navegação direta ou redirects lentos", () => {
     ]),
     []
   );
+});
+
+test("detecta polling regular e rejeita repetição irregular", () => {
+  const regular = [0, 1000, 2000, 3000].map((timestamp) => ({ timestamp }));
+  const irregular = [0, 100, 5000, 5010].map((timestamp) => ({ timestamp }));
+
+  assert.equal(detectPersistentPolling(regular).detected, true);
+  assert.equal(detectPersistentPolling(irregular).detected, false);
+  assert.equal(detectPersistentPolling(regular.slice(0, 3)).detected, false);
+});
+
+test("normaliza e compara domínios da lista de bloqueio", () => {
+  assert.equal(
+    normalizeBlockDomain("https://Tracker.Example/path"),
+    "tracker.example"
+  );
+  assert.equal(matchesBlockDomain("cdn.tracker.example", "tracker.example"), true);
+  assert.equal(matchesBlockDomain("nottracker.example", "tracker.example"), false);
+});
+
+test("score aplica pesos e limites por categoria", () => {
+  const result = calculatePrivacyScore({
+    thirdPartyDomains: ["a.test", "b.test"],
+    cookies: {
+      preexisting: [
+        { isThirdParty: true, isSession: false },
+        { isThirdParty: true, isSession: true },
+      ],
+      changed: [],
+    },
+    storage: [
+      {
+        localStorage: { keyCount: 2 },
+        sessionStorage: { keyCount: 1 },
+        indexedDB: { databases: [{ name: "db" }] },
+      },
+    ],
+    canvas: { detected: true },
+    bounceTracking: { detected: true },
+    identifierSharing: { detected: true },
+    hijacking: {
+      hookReplacements: [{ target: "fetch" }],
+      thirdPartyWebSockets: [{ domain: "socket.test" }],
+      polling: [{ detected: true }],
+    },
+  });
+
+  assert.equal(result.totalDiscount, 65);
+  assert.equal(result.score, 35);
+  assert.equal(result.categories.length, 6);
+});
+
+test("score vazio permanece 100 e descontos nunca ultrapassam 100", () => {
+  assert.equal(calculatePrivacyScore({}).score, 100);
+
+  const saturated = calculatePrivacyScore({
+    thirdPartyDomains: Array.from({ length: 30 }, (_, index) => `${index}.test`),
+    cookies: {
+      preexisting: Array.from({ length: 30 }, () => ({
+        isThirdParty: true,
+        isSession: false,
+      })),
+      changed: [],
+    },
+    canvas: { detected: true },
+    bounceTracking: { detected: true },
+    identifierSharing: { detected: true },
+    hijacking: {
+      hookReplacements: [{}],
+      thirdPartyWebSockets: [{}],
+      polling: [{ detected: true }],
+    },
+  });
+
+  assert.equal(saturated.score, 10);
+  assert.equal(saturated.totalDiscount, 90);
 });

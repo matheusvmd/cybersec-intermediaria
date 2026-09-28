@@ -1,25 +1,35 @@
 "use strict";
 
 (() => {
-  const EVENT_NAME = "privacy-auditor:canvas-read";
-  const INSTALL_KEY = Symbol.for("privacy-auditor.canvas-bridge.installed");
-  const ALLOWED_METHODS = new Set(["toDataURL", "toBlob", "getImageData"]);
+  const EVENT_NAME = "privacy-auditor:page-observation";
+  const INSTALL_KEY = Symbol.for("privacy-auditor.page-bridge.installed");
+  const ALLOWED_KINDS = new Set([
+    "canvas_read",
+    "network_api_call",
+    "websocket",
+    "dynamic_script",
+    "hook_replaced",
+  ]);
 
   if (globalThis[INSTALL_KEY]) {
     return;
   }
   globalThis[INSTALL_KEY] = true;
 
+  function shortString(value, maximumLength) {
+    return typeof value === "string" ? value.slice(0, maximumLength) : "";
+  }
+
   window.addEventListener(
     EVENT_NAME,
     (event) => {
       try {
-        if (typeof event.detail !== "string" || event.detail.length > 5000) {
+        if (typeof event.detail !== "string" || event.detail.length > 10000) {
           return;
         }
 
         const detail = JSON.parse(event.detail);
-        if (!detail || !ALLOWED_METHODS.has(detail.method)) {
+        if (!detail || !ALLOWED_KINDS.has(detail.kind)) {
           return;
         }
 
@@ -32,21 +42,21 @@
 
         browser.runtime
           .sendMessage({
-            type: "CANVAS_READ",
-            method: detail.method,
+            type: "PAGE_OBSERVATION",
+            kind: detail.kind,
             timestamp: Number.isFinite(detail.timestamp)
               ? detail.timestamp
               : Date.now(),
-            origin:
-              typeof detail.origin === "string"
-                ? detail.origin.slice(0, 2048)
-                : "Origem indisponível",
-            frame: detail.frame === "principal" ? "principal" : "secundário",
+            origin: shortString(detail.origin, 2048),
+            method: shortString(detail.method, 40),
+            api: shortString(detail.api, 40),
+            url: shortString(detail.url, 2048),
+            target: shortString(detail.target, 120),
+            scriptUrl: shortString(detail.scriptUrl, 500),
+            inline: Boolean(detail.inline),
+            module: Boolean(detail.module),
+            async: Boolean(detail.async),
             stack,
-            scriptUrl:
-              typeof detail.scriptUrl === "string"
-                ? detail.scriptUrl.slice(0, 500)
-                : "",
           })
           .catch(() => {
             // A extensão pode ter sido recarregada durante a navegação.
@@ -58,4 +68,3 @@
     true
   );
 })();
-

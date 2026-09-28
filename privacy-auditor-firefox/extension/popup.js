@@ -44,6 +44,31 @@ const identifierSummaryElement = document.querySelector("#identifier-summary");
 const identifierDetectionsElement = document.querySelector(
   "#identifier-detections"
 );
+const privacyScoreElement = document.querySelector("#privacy-score");
+const scoreDiscountsElement = document.querySelector("#score-discounts");
+const clearTabDataButton = document.querySelector("#clear-tab-data");
+const hijackingStatusElement = document.querySelector("#hijacking-status");
+const hijackingSummaryElement = document.querySelector("#hijacking-summary");
+const thirdPartyWebSocketsElement = document.querySelector(
+  "#third-party-websockets"
+);
+const pollingDetectionsElement = document.querySelector("#polling-detections");
+const hookReplacementsElement = document.querySelector("#hook-replacements");
+const dynamicScriptsElement = document.querySelector("#dynamic-scripts");
+const blockingEnabledElement = document.querySelector("#blocking-enabled");
+const blockDomainForm = document.querySelector("#block-domain-form");
+const blockDomainInput = document.querySelector("#block-domain-input");
+const blockingErrorElement = document.querySelector("#blocking-error");
+const blockedDomainListElement = document.querySelector("#blocked-domain-list");
+const blockDetectedCountElement = document.querySelector(
+  "#block-detected-count"
+);
+const blockDetectedListElement = document.querySelector("#block-detected-list");
+const blockBlockedCountElement = document.querySelector("#block-blocked-count");
+const blockBlockedListElement = document.querySelector("#block-blocked-list");
+let currentTabId = null;
+let currentTabUrl = "";
+let lastReport = null;
 
 function getHostname(url) {
   try {
@@ -408,7 +433,161 @@ function renderIdentifierSharing(identifierSharing) {
   });
 }
 
+function renderScore(score) {
+  const report = score || {};
+  privacyScoreElement.textContent = Number.isFinite(report.score)
+    ? String(report.score)
+    : "—";
+  clearChildren(scoreDiscountsElement);
+
+  (Array.isArray(report.categories) ? report.categories : []).forEach((item) => {
+    scoreDiscountsElement.append(
+      createRecord(`${item.label}: −${item.discount}/${item.maximum}`, [
+        ...(Array.isArray(item.reasons) && item.reasons.length > 0
+          ? item.reasons
+          : ["Nenhum desconto nesta categoria."]),
+      ])
+    );
+  });
+}
+
+function renderHijacking(hijacking) {
+  const report = hijacking || {};
+  const sockets = Array.isArray(report.thirdPartyWebSockets)
+    ? report.thirdPartyWebSockets
+    : [];
+  const polling = Array.isArray(report.polling) ? report.polling : [];
+  const replacements = Array.isArray(report.hookReplacements)
+    ? report.hookReplacements
+    : [];
+  const scripts = Array.isArray(report.dynamicScripts)
+    ? report.dynamicScripts
+    : [];
+  setDetectionStatus(hijackingStatusElement, Boolean(report.detected));
+  hijackingSummaryElement.textContent = report.detected
+    ? "Um ou mais indicadores heurísticos foram observados."
+    : "Nenhum indicador observado.";
+  [
+    thirdPartyWebSocketsElement,
+    pollingDetectionsElement,
+    hookReplacementsElement,
+    dynamicScriptsElement,
+  ].forEach(clearChildren);
+
+  sockets.forEach((socket) => {
+    thirdPartyWebSocketsElement.append(
+      createRecord(socket.domain || "WebSocket", [socket.url, socket.justification])
+    );
+  });
+  polling.forEach((item) => {
+    pollingDetectionsElement.append(
+      createRecord(item.endpoint || "Endpoint", [
+        `${item.api} · ${item.callCount} chamadas`,
+        `Intervalo médio: ${item.averageIntervalMs} ms`,
+        item.justification,
+      ])
+    );
+  });
+  replacements.forEach((item) => {
+    hookReplacementsElement.append(
+      createRecord(item.target || "Função", [
+        `${item.origin} · frame ${item.frameId}`,
+        formatTimestamp(item.timestamp),
+      ])
+    );
+  });
+  scripts.forEach((script) => {
+    dynamicScriptsElement.append(
+      createRecord(script.url || "Script inline", [
+        script.isThirdParty ? "terceira parte" : "primeira parte ou inline",
+        script.assessment,
+        formatTimestamp(script.timestamp),
+      ])
+    );
+  });
+}
+
+function renderBlockMatchList(matches, container, countElement) {
+  const items = Array.isArray(matches) ? matches : [];
+  clearChildren(container);
+  countElement.textContent = String(items.length);
+  items.forEach((item) => {
+    container.append(
+      createRecord(item.matchedDomain || item.hostname || "Domínio", [
+        item.url || "URL indisponível",
+        `${item.type || "other"} · ${formatTimestamp(item.timestamp)}`,
+      ])
+    );
+  });
+}
+
+function renderBlocking(blocking) {
+  const report = blocking || {};
+  blockingEnabledElement.checked = Boolean(report.enabled);
+  clearChildren(blockedDomainListElement);
+  (Array.isArray(report.domains) ? report.domains : []).forEach((domain) => {
+    const item = document.createElement("li");
+    const label = document.createElement("span");
+    const controls = document.createElement("span");
+    const editButton = document.createElement("button");
+    const removeButton = document.createElement("button");
+    label.textContent = domain;
+    editButton.type = "button";
+    editButton.textContent = "Editar";
+    editButton.addEventListener("click", () => {
+      const updatedDomain = window.prompt("Novo domínio", domain);
+      if (updatedDomain && updatedDomain !== domain) {
+        updateBlockSettings("UPDATE_BLOCK_DOMAIN", {
+          previousDomain: domain,
+          domain: updatedDomain,
+        });
+      }
+    });
+    removeButton.type = "button";
+    removeButton.textContent = "Remover";
+    removeButton.addEventListener("click", () => updateBlockSettings(
+      "REMOVE_BLOCK_DOMAIN",
+      { domain }
+    ));
+    controls.append(editButton, removeButton);
+    item.append(label, controls);
+    blockedDomainListElement.append(item);
+  });
+  renderBlockMatchList(
+    report.detected,
+    blockDetectedListElement,
+    blockDetectedCountElement
+  );
+  renderBlockMatchList(
+    report.blocked,
+    blockBlockedListElement,
+    blockBlockedCountElement
+  );
+}
+
+async function updateBlockSettings(type, values = {}) {
+  blockingErrorElement.hidden = true;
+  try {
+    const settings = await browser.runtime.sendMessage({ type, ...values });
+    if (settings.error) {
+      blockingErrorElement.textContent = settings.error;
+      blockingErrorElement.hidden = false;
+    }
+    lastReport = lastReport || {};
+    lastReport.blocking = {
+      ...(lastReport.blocking || {}),
+      enabled: settings.enabled,
+      domains: settings.domains,
+    };
+    renderBlocking(lastReport.blocking);
+  } catch (_error) {
+    blockingErrorElement.textContent = "Não foi possível salvar a lista.";
+    blockingErrorElement.hidden = false;
+  }
+}
+
 function renderReport(report, fallbackUrl) {
+  lastReport = report;
   const url = report.url || fallbackUrl || "";
   const mainDomain =
     report.registrableDomain || report.hostname || getHostname(url);
@@ -428,6 +607,9 @@ function renderReport(report, fallbackUrl) {
   renderCanvas(report.canvas);
   renderBounceTracking(report.bounceTracking);
   renderIdentifierSharing(report.identifierSharing);
+  renderScore(report.score);
+  renderHijacking(report.hijacking);
+  renderBlocking(report.blocking);
 
   reportElement.hidden = false;
   contentElement.setAttribute("aria-busy", "false");
@@ -436,7 +618,11 @@ function renderReport(report, fallbackUrl) {
     ((report.cookies && report.cookies.preexisting) || []).length +
     ((report.cookies && report.cookies.changed) || []).length;
   const hasData =
-    totalRequests > 0 || (report.storage || []).length > 0 || cookieCount > 0;
+    totalRequests > 0 ||
+    (report.storage || []).length > 0 ||
+    cookieCount > 0 ||
+    Boolean(report.canvas && report.canvas.detected) ||
+    Boolean(report.hijacking && report.hijacking.detected);
   if (!hasData) {
     setStatus(
       getHostname(url)
@@ -458,6 +644,9 @@ async function loadActiveTabReport() {
       throw new Error("A aba ativa não pôde ser identificada.");
     }
 
+    currentTabId = activeTab.id;
+    currentTabUrl = activeTab.url || "";
+
     const report = await browser.runtime.sendMessage({
       type: "GET_TAB_REPORT",
       tabId: activeTab.id,
@@ -469,5 +658,40 @@ async function loadActiveTabReport() {
     setStatus("Não foi possível carregar os dados desta aba.", "error");
   }
 }
+
+clearTabDataButton.addEventListener("click", async () => {
+  if (!Number.isInteger(currentTabId)) {
+    return;
+  }
+  try {
+    const report = await browser.runtime.sendMessage({
+      type: "CLEAR_TAB_DATA",
+      tabId: currentTabId,
+    });
+    renderReport(report || {}, currentTabUrl);
+    setStatus("Dados desta aba foram limpos.", "empty");
+  } catch (_error) {
+    setStatus("Não foi possível limpar os dados desta aba.", "error");
+  }
+});
+
+blockingEnabledElement.addEventListener("change", () => {
+  updateBlockSettings("SET_BLOCKING_ENABLED", {
+    enabled: blockingEnabledElement.checked,
+  });
+});
+
+blockDomainForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const domain = blockDomainInput.value.trim();
+  if (!domain) {
+    return;
+  }
+  updateBlockSettings("ADD_BLOCK_DOMAIN", { domain }).then(() => {
+    if (blockingErrorElement.hidden) {
+      blockDomainInput.value = "";
+    }
+  });
+});
 
 loadActiveTabReport();
