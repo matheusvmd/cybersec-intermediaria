@@ -1,0 +1,109 @@
+@page {
+  size: A4;
+  margin: 18mm 16mm 18mm 16mm;
+}
+
+body {
+  color: #1f2933;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+}
+
+.cover {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 245mm;
+  justify-content: center;
+  text-align: center;
+}
+
+.cover h1 {
+  font-size: 34pt;
+  margin: 0 0 18px;
+}
+
+.cover h2 {
+  border: 0;
+  font-size: 21pt;
+  margin: 0 0 55px;
+}
+
+.cover p {
+  font-size: 12pt;
+  margin: 7px 0;
+}
+
+.page-break {
+  break-after: page;
+  page-break-after: always;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #17202a;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 23pt;
+}
+
+h2 {
+  border-bottom: 1px solid #ccd1d1;
+  font-size: 17pt;
+  padding-bottom: 4px;
+}
+
+h3 {
+  font-size: 14pt;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  margin: 12px 0;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #aeb6bf;
+  padding: 5px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eaecee;
+}
+
+img {
+  border: 1px solid #d5d8dc;
+  display: block;
+  margin: 10px auto 22px;
+  max-height: 185mm;
+  max-width: 100%;
+  object-fit: contain;
+  page-break-inside: avoid;
+}
+
+p:has(> img) {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+blockquote,
+pre,
+table,
+tr {
+  page-break-inside: avoid;
+}

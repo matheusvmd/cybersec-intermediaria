@@ -85,6 +85,25 @@
     }
 
     const labels = normalized.split(".");
+    const commonSecondLevelSuffixes = new Set([
+      "ac",
+      "co",
+      "com",
+      "edu",
+      "gov",
+      "net",
+      "org",
+    ]);
+    const hasCommonCountryCodeSuffix = Boolean(
+      labels.length > 2 &&
+        labels.at(-1).length === 2 &&
+        commonSecondLevelSuffixes.has(labels.at(-2))
+    );
+
+    if (hasCommonCountryCodeSuffix) {
+      return labels.slice(-3).join(".");
+    }
+
     return labels.length > 2 ? labels.slice(-2).join(".") : normalized;
   }
 
@@ -302,7 +321,6 @@
         incoming.toDomain !== outgoing.toDomain;
 
       if (
-        incoming.automatic &&
         outgoing.automatic &&
         sameIntermediate &&
         distinctIntermediate &&

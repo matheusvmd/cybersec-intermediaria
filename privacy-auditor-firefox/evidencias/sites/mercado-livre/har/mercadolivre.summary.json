@@ -1,0 +1,267 @@
+{
+  "sourceFile": "mercadolivre.har",
+  "disclaimer": "Resultados heurísticos; confirme cada item no HAR original e nas demais evidências.",
+  "totalRequests": 122,
+  "mainDomain": "mercadolivre.com.br",
+  "uniqueDomains": [
+    "accounts.google.com",
+    "api.mercadolibre.com",
+    "fonts.gstatic.com",
+    "http2.mlstatic.com",
+    "matt.mercadolivre.com.br",
+    "o11y-proxy-otel-frontend.meli.com",
+    "placements.mercadolibre.com",
+    "print1.mercadoclics.com",
+    "script.hotjar.com",
+    "static.hotjar.com",
+    "www.mercadolivre.com.br"
+  ],
+  "possibleThirdPartyDomains": [
+    "accounts.google.com",
+    "api.mercadolibre.com",
+    "fonts.gstatic.com",
+    "http2.mlstatic.com",
+    "o11y-proxy-otel-frontend.meli.com",
+    "placements.mercadolibre.com",
+    "print1.mercadoclics.com",
+    "script.hotjar.com",
+    "static.hotjar.com"
+  ],
+  "countsByResourceType": {
+    "document": 2,
+    "font": 4,
+    "image": 5,
+    "json": 13,
+    "other": 15,
+    "script": 79,
+    "stylesheet": 4
+  },
+  "responsesWithSetCookie": [
+    {
+      "domain": "www.mercadolivre.com.br",
+      "url": "https://www.mercadolivre.com.br/",
+      "status": 200,
+      "headerCount": 3,
+      "cookieNames": [
+        "_mldataSessionId",
+        "x-theme",
+        "hide-cookie-banner"
+      ]
+    },
+    {
+      "domain": "o11y-proxy-otel-frontend.meli.com",
+      "url": "https://o11y-proxy-otel-frontend.meli.com/v1/metrics",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A683%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A832%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2774%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "url": "https://print1.mercadoclics.com/display/prints/MLB/count?d=%5Bmascarado%3A2795%5D&cipher=%5Bmascarado%3A2%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "o11y-proxy-otel-frontend.meli.com",
+      "url": "https://o11y-proxy-otel-frontend.meli.com/v1/metrics",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    },
+    {
+      "domain": "o11y-proxy-otel-frontend.meli.com",
+      "url": "https://o11y-proxy-otel-frontend.meli.com/v1/metrics",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "_d2id"
+      ]
+    }
+  ],
+  "redirects": [],
+  "webSockets": [],
+  "identifierParameters": [
+    {
+      "domain": "www.mercadolivre.com.br",
+      "endpoint": "https://www.mercadolivre.com.br/adn/api",
+      "name": "ad_unit",
+      "maskedValue": "[mascarado:37]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.mercadolivre.com.br",
+      "endpoint": "https://www.mercadolivre.com.br/adn/api",
+      "name": "unique_id",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "endpoint": "https://print1.mercadoclics.com/display/prints/MLB/count",
+      "name": "d",
+      "maskedValue": "[mascarado:683]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "accounts.google.com",
+      "endpoint": "https://accounts.google.com/gsi/status",
+      "name": "client_id",
+      "maskedValue": "[mascarado:71]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "accounts.google.com",
+      "endpoint": "https://accounts.google.com/gsi/status",
+      "name": "cas",
+      "maskedValue": "[mascarado:43]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "accounts.google.com",
+      "endpoint": "https://accounts.google.com/gsi/status",
+      "name": "bs",
+      "maskedValue": "[mascarado:43]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "accounts.google.com",
+      "endpoint": "https://accounts.google.com/gsi/iframe/select",
+      "name": "as",
+      "maskedValue": "[mascarado:43]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "accounts.google.com",
+      "endpoint": "https://accounts.google.com/gsi/iframe/select",
+      "name": "channel_id",
+      "maskedValue": "[mascarado:64]",
+      "rule": "valor longo com aparência de identificador"
+    }
+  ],
+  "requestsByDomain": [
+    {
+      "domain": "accounts.google.com",
+      "count": 4
+    },
+    {
+      "domain": "api.mercadolibre.com",
+      "count": 8
+    },
+    {
+      "domain": "fonts.gstatic.com",
+      "count": 1
+    },
+    {
+      "domain": "http2.mlstatic.com",
+      "count": 86
+    },
+    {
+      "domain": "matt.mercadolivre.com.br",
+      "count": 1
+    },
+    {
+      "domain": "o11y-proxy-otel-frontend.meli.com",
+      "count": 3
+    },
+    {
+      "domain": "placements.mercadolibre.com",
+      "count": 1
+    },
+    {
+      "domain": "print1.mercadoclics.com",
+      "count": 13
+    },
+    {
+      "domain": "script.hotjar.com",
+      "count": 1
+    },
+    {
+      "domain": "static.hotjar.com",
+      "count": 1
+    },
+    {
+      "domain": "www.mercadolivre.com.br",
+      "count": 3
+    }
+  ],
+  "possiblePolling": []
+}

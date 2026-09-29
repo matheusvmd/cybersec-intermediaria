@@ -1,0 +1,1795 @@
+{
+  "sourceFile": "uol.har",
+  "disclaimer": "Resultados heurísticos; confirme cada item no HAR original e nas demais evidências.",
+  "totalRequests": 494,
+  "mainDomain": "uol.com.br",
+  "uniqueDomains": [
+    "1966a6ab0bcf78b27551636567b427a9.safeframe.googlesyndication.com",
+    "4b91477e-f67b-4d81-86db-a9742bd41e9c.edge.permutive.app",
+    "analytics.google.com",
+    "api.mais.uol.com.br",
+    "api.permutive.com",
+    "ats-wrapper.privacymanager.io",
+    "bs.uol.com.br",
+    "c.amazon-adsystem.com",
+    "c2.piano.io",
+    "cdn.cxense.com",
+    "cdn.tinypass.com",
+    "comcluster.cxense.com",
+    "config.aps.amazon-adsystem.com",
+    "conteudo.imguol.com.br",
+    "conteudo.jsuol.com.br",
+    "croupier.mais.uol.com.br",
+    "csi.gstatic.com",
+    "ep1.adtrafficquality.google",
+    "ep2.adtrafficquality.google",
+    "events.newsroom.bi",
+    "experiences.newsroom.bi",
+    "fastlane.rubiconproject.com",
+    "fonts.gstatic.com",
+    "fundingchoicesmessages.google.com",
+    "googleads.g.doubleclick.net",
+    "gum.criteo.com",
+    "h.jsuol.com.br",
+    "i.ytimg.com",
+    "ib.adnxs.com",
+    "imasdk.googleapis.com",
+    "img.youtube.com",
+    "jnn-pa.googleapis.com",
+    "launchpad-wrapper.privacymanager.io",
+    "launchpad.privacymanager.io",
+    "mab.chartbeat.com",
+    "marfeelexperimentsexperienceengine.mrf.io",
+    "me.jsuol.com",
+    "me.jsuol.com.br",
+    "mfe.fantascope.uol.com.br",
+    "pagead2.googlesyndication.com",
+    "ping.chartbeat.net",
+    "player.fantascope.uol.com.br",
+    "prg.smartadserver.com",
+    "pubads.g.doubleclick.net",
+    "s.cdn.turner.com",
+    "s.seedtag.com",
+    "s0.2mdn.net",
+    "sb.scorecardresearch.com",
+    "sdk.mrf.io",
+    "secure.adnxs.com",
+    "securepubads.g.doubleclick.net",
+    "static.chartbeat.com",
+    "static.doubleclick.net",
+    "thumb.mais.uol.com.br",
+    "tm.jsuol.com.br",
+    "tm.uol.com.br",
+    "tpc.googlesyndication.com",
+    "udr.uol.com.br",
+    "upc.udr.uol.com.br",
+    "video47.mais.uol.com.br",
+    "web-banner.ads.aps.amazon-adsystem.com",
+    "www.google-analytics.com",
+    "www.google.com",
+    "www.google.com.br",
+    "www.googletagmanager.com",
+    "www.uol.com.br",
+    "www.youtube.com"
+  ],
+  "possibleThirdPartyDomains": [
+    "1966a6ab0bcf78b27551636567b427a9.safeframe.googlesyndication.com",
+    "4b91477e-f67b-4d81-86db-a9742bd41e9c.edge.permutive.app",
+    "analytics.google.com",
+    "api.permutive.com",
+    "ats-wrapper.privacymanager.io",
+    "c.amazon-adsystem.com",
+    "c2.piano.io",
+    "cdn.cxense.com",
+    "cdn.tinypass.com",
+    "comcluster.cxense.com",
+    "config.aps.amazon-adsystem.com",
+    "conteudo.imguol.com.br",
+    "conteudo.jsuol.com.br",
+    "csi.gstatic.com",
+    "ep1.adtrafficquality.google",
+    "ep2.adtrafficquality.google",
+    "events.newsroom.bi",
+    "experiences.newsroom.bi",
+    "fastlane.rubiconproject.com",
+    "fonts.gstatic.com",
+    "fundingchoicesmessages.google.com",
+    "googleads.g.doubleclick.net",
+    "gum.criteo.com",
+    "h.jsuol.com.br",
+    "i.ytimg.com",
+    "ib.adnxs.com",
+    "imasdk.googleapis.com",
+    "img.youtube.com",
+    "jnn-pa.googleapis.com",
+    "launchpad-wrapper.privacymanager.io",
+    "launchpad.privacymanager.io",
+    "mab.chartbeat.com",
+    "marfeelexperimentsexperienceengine.mrf.io",
+    "me.jsuol.com",
+    "me.jsuol.com.br",
+    "pagead2.googlesyndication.com",
+    "ping.chartbeat.net",
+    "prg.smartadserver.com",
+    "pubads.g.doubleclick.net",
+    "s.cdn.turner.com",
+    "s.seedtag.com",
+    "s0.2mdn.net",
+    "sb.scorecardresearch.com",
+    "sdk.mrf.io",
+    "secure.adnxs.com",
+    "securepubads.g.doubleclick.net",
+    "static.chartbeat.com",
+    "static.doubleclick.net",
+    "tm.jsuol.com.br",
+    "tpc.googlesyndication.com",
+    "web-banner.ads.aps.amazon-adsystem.com",
+    "www.google-analytics.com",
+    "www.google.com",
+    "www.google.com.br",
+    "www.googletagmanager.com",
+    "www.youtube.com"
+  ],
+  "countsByResourceType": {
+    "document": 26,
+    "font": 2,
+    "image": 122,
+    "json": 90,
+    "other": 148,
+    "script": 100,
+    "stylesheet": 6
+  },
+  "responsesWithSetCookie": [
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/p?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A23%5D&c15=%5Bmascarado%3A0%5D&cv=%5Bmascarado%3A3%5D&cj=%5Bmascarado%3A1%5D&cs_fpid=%5Bmascarado%3A36%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/b?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&cs_it=%5Bmascarado%3A2%5D&cv=%5Bmascarado%3A17%5D&ns__t=%5Bmascarado%3A13%5D&ns_c=%5Bmascarado%3A5%5D&cs_cfg=%5Bmascarado%3A7%5D&ns_if=%5Bmascarado%3A1%5D&cs_gpc=%5Bmascarado%3A1%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A31%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D&cs_fpid=%5Bmascarado%3A36%5D&c7=%5Bmascarado%3A23%5D&c8=%5Bmascarado%3A0%5D&c9=%5Bmascarado%3A0%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "url": "https://comcluster.cxense.com/activity/push?ver=%5Bmascarado%3A5%5D&rnd=%5Bmascarado%3A16%5D&ckp=%5Bmascarado%3A16%5D&loc=%5Bmascarado%3A23%5D&sid=%5Bmascarado%3A19%5D&glb=%5Bmascarado%3A41%5D&altm=%5Bmascarado%3A13%5D&arnd=%5Bmascarado%3A16%5D&aatm=%5Bmascarado%3A2%5D&axtl=%5Bmascarado%3A0%5D&awsz=%5Bmascarado%3A8%5D&amvw=%5Bmascarado%3A8%5D&ascp=%5Bmascarado%3A3%5D&aclk=%5Bmascarado%3A1%5D&ause=%5Bmascarado%3A1%5D&altc=%5Bmascarado%3A3%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "gckp"
+      ]
+    },
+    {
+      "domain": "udr.uol.com.br",
+      "url": "https://udr.uol.com.br/?incognitoMode=%5Bmascarado%3A5%5D&cb=%5Bmascarado%3A13%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "UOLID"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/b?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&cs_fpcu=%5Bmascarado%3A32%5D&cs_it=%5Bmascarado%3A2%5D&cv=%5Bmascarado%3A17%5D&ns__t=%5Bmascarado%3A13%5D&ns_c=%5Bmascarado%3A5%5D&cs_cfg=%5Bmascarado%3A7%5D&cs_gpc=%5Bmascarado%3A1%5D&c7=%5Bmascarado%3A23%5D&c8=%5Bmascarado%3A25%5D&c9=%5Bmascarado%3A0%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "cdn.tinypass.com",
+      "url": "https://cdn.tinypass.com/api/tinypass.min.js",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "__cf_bm"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/p?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A23%5D&c15=%5Bmascarado%3A0%5D&cv=%5Bmascarado%3A3%5D&cj=%5Bmascarado%3A1%5D&cs_fpid=%5Bmascarado%3A36%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/b?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&cs_it=%5Bmascarado%3A2%5D&cv=%5Bmascarado%3A17%5D&ns__t=%5Bmascarado%3A13%5D&ns_c=%5Bmascarado%3A5%5D&cs_cfg=%5Bmascarado%3A7%5D&ns_if=%5Bmascarado%3A1%5D&cs_gpc=%5Bmascarado%3A1%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A31%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D&cs_fpid=%5Bmascarado%3A36%5D&c7=%5Bmascarado%3A23%5D&c8=%5Bmascarado%3A8%5D&c9=%5Bmascarado%3A0%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "url": "https://comcluster.cxense.com/Repo/rep.gif?ver=%5Bmascarado%3A5%5D&typ=%5Bmascarado%3A3%5D&rnd=%5Bmascarado%3A16%5D&sid=%5Bmascarado%3A19%5D&loc=%5Bmascarado%3A23%5D&new=%5Bmascarado%3A1%5D&arf=%5Bmascarado%3A1%5D&ltm=%5Bmascarado%3A13%5D&source=%5Bmascarado%3A3%5D&ref=%5Bmascarado%3A0%5D&tzo=%5Bmascarado%3A3%5D&wsz=%5Bmascarado%3A8%5D&res=%5Bmascarado%3A8%5D&dpr=%5Bmascarado%3A1%5D&col=%5Bmascarado%3A2%5D&bln=%5Bmascarado%3A5%5D&chs=%5Bmascarado%3A5%5D&cks=%5Bmascarado%3A16%5D&ckp=%5Bmascarado%3A16%5D&glb=%5Bmascarado%3A41%5D&eid0=%5Bmascarado%3A36%5D&eit0=%5Bmascarado%3A3%5D&cp_userState=%5Bmascarado%3A4%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "gckp"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/p?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A23%5D&c15=%5Bmascarado%3A0%5D&cv=%5Bmascarado%3A3%5D&cj=%5Bmascarado%3A1%5D&cs_fpid=%5Bmascarado%3A36%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/b?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&cs_it=%5Bmascarado%3A2%5D&cv=%5Bmascarado%3A17%5D&ns__t=%5Bmascarado%3A13%5D&ns_c=%5Bmascarado%3A5%5D&cs_cfg=%5Bmascarado%3A7%5D&ns_if=%5Bmascarado%3A1%5D&cs_gpc=%5Bmascarado%3A1%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A31%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D&cs_fpid=%5Bmascarado%3A36%5D&c7=%5Bmascarado%3A23%5D&c8=%5Bmascarado%3A0%5D&c9=%5Bmascarado%3A0%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/p?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A23%5D&c15=%5Bmascarado%3A0%5D&cv=%5Bmascarado%3A3%5D&cj=%5Bmascarado%3A1%5D&cs_fpid=%5Bmascarado%3A36%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "url": "https://sb.scorecardresearch.com/b?c1=%5Bmascarado%3A1%5D&c2=%5Bmascarado%3A7%5D&cs_it=%5Bmascarado%3A2%5D&cv=%5Bmascarado%3A17%5D&ns__t=%5Bmascarado%3A13%5D&ns_c=%5Bmascarado%3A5%5D&cs_cfg=%5Bmascarado%3A7%5D&ns_if=%5Bmascarado%3A1%5D&cs_gpc=%5Bmascarado%3A1%5D&c3=%5Bmascarado%3A1%5D&c4=%5Bmascarado%3A31%5D&cs_fpit=%5Bmascarado%3A1%5D&cs_fpdm=%5Bmascarado%3A5%5D&cs_fpdt=%5Bmascarado%3A2%5D&cs_fpid=%5Bmascarado%3A36%5D&c7=%5Bmascarado%3A23%5D&c8=%5Bmascarado%3A0%5D&c9=%5Bmascarado%3A0%5D",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "UID"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "secure.adnxs.com",
+      "url": "https://secure.adnxs.com/seg?add=%5Bmascarado%3A8%5D&t=%5Bmascarado%3A1%5D&gdpr=%5Bmascarado%3A1%5D",
+      "status": 307,
+      "headerCount": 1,
+      "cookieNames": [
+        "uuid2"
+      ]
+    },
+    {
+      "domain": "secure.adnxs.com",
+      "url": "https://secure.adnxs.com/seg?add=%5Bmascarado%3A8%5D&t=%5Bmascarado%3A1%5D&gdpr=%5Bmascarado%3A1%5D",
+      "status": 307,
+      "headerCount": 1,
+      "cookieNames": [
+        "uuid2"
+      ]
+    },
+    {
+      "domain": "www.youtube.com",
+      "url": "https://www.youtube.com/iframe_api?ima=%5Bmascarado%3A1%5D",
+      "status": 200,
+      "headerCount": 6,
+      "cookieNames": [
+        "__Secure-YNID",
+        "YSC",
+        "__Secure-YEC",
+        "VISITOR_INFO1_LIVE",
+        "VISITOR_PRIVACY_METADATA",
+        "__Secure-ROLLOUT_TOKEN"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "www.youtube.com",
+      "url": "https://www.youtube.com/embed/i8vzs1fISNA?autoplay=%5Bmascarado%3A1%5D&playsinline=%5Bmascarado%3A1%5D&enablejsapi=%5Bmascarado%3A1%5D&rel=%5Bmascarado%3A1%5D&start=%5Bmascarado%3A1%5D&origin=%5Bmascarado%3A22%5D&muted=%5Bmascarado%3A1%5D&embed_config=%5Bmascarado%3A97%5D&widgetid=%5Bmascarado%3A1%5D&forigin=%5Bmascarado%3A23%5D&aoriginsup=%5Bmascarado%3A1%5D&vf=%5Bmascarado%3A1%5D",
+      "status": 200,
+      "headerCount": 5,
+      "cookieNames": [
+        "__Secure-YNID",
+        "__Secure-YEC",
+        "VISITOR_INFO1_LIVE",
+        "VISITOR_PRIVACY_METADATA",
+        "__Secure-ROLLOUT_TOKEN"
+      ]
+    },
+    {
+      "domain": "secure.adnxs.com",
+      "url": "https://secure.adnxs.com/bounce?%2Fseg%3Fadd%3D41934781%26t%3D1%26gdpr%3D0=%5Bmascarado%3A0%5D",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "anj",
+        "uuid2"
+      ]
+    },
+    {
+      "domain": "secure.adnxs.com",
+      "url": "https://secure.adnxs.com/bounce?%2Fseg%3Fadd%3D40132462%26t%3D1%26gdpr%3D0=%5Bmascarado%3A0%5D",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "anj",
+        "uuid2"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/recirculation/[segmento-mascarado]",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "4196_s"
+      ]
+    },
+    {
+      "domain": "s.seedtag.com",
+      "url": "https://s.seedtag.com/c/hb/bid",
+      "status": 200,
+      "headerCount": 2,
+      "cookieNames": [
+        "st_uid",
+        "st_ssp"
+      ]
+    },
+    {
+      "domain": "ib.adnxs.com",
+      "url": "https://ib.adnxs.com/openrtb2/prebidjs",
+      "status": 204,
+      "headerCount": 1,
+      "cookieNames": [
+        "uuid2"
+      ]
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "url": "https://prg.smartadserver.com/prebid/v1",
+      "status": 200,
+      "headerCount": 1,
+      "cookieNames": [
+        "vs"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "url": "https://events.newsroom.bi/ingest.php",
+      "status": 200,
+      "headerCount": 4,
+      "cookieNames": [
+        "4196_u",
+        "4196_s",
+        "4196_lv",
+        "4196_ut"
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "status": 302,
+      "from": "https://sb.scorecardresearch.com/cs/6036356/beacon.js",
+      "fromDomain": "scorecardresearch.com",
+      "to": "https://sb.scorecardresearch.com/internal-cs/6036356/beacon.js",
+      "toDomain": "scorecardresearch.com"
+    },
+    {
+      "status": 302,
+      "from": "https://sb.scorecardresearch.com/cs/6036356/beacon.js",
+      "fromDomain": "scorecardresearch.com",
+      "to": "https://sb.scorecardresearch.com/internal-cs/6036356/beacon.js",
+      "toDomain": "scorecardresearch.com"
+    },
+    {
+      "status": 302,
+      "from": "https://sb.scorecardresearch.com/cs/6036356/beacon.js",
+      "fromDomain": "scorecardresearch.com",
+      "to": "https://sb.scorecardresearch.com/internal-cs/6036356/beacon.js",
+      "toDomain": "scorecardresearch.com"
+    },
+    {
+      "status": 302,
+      "from": "https://sb.scorecardresearch.com/cs/6036356/beacon.js",
+      "fromDomain": "scorecardresearch.com",
+      "to": "https://sb.scorecardresearch.com/internal-cs/6036356/beacon.js",
+      "toDomain": "scorecardresearch.com"
+    },
+    {
+      "status": 302,
+      "from": "https://sb.scorecardresearch.com/cs/6036356/beacon.js",
+      "fromDomain": "scorecardresearch.com",
+      "to": "https://sb.scorecardresearch.com/internal-cs/6036356/beacon.js",
+      "toDomain": "scorecardresearch.com"
+    },
+    {
+      "status": 307,
+      "from": "https://secure.adnxs.com/seg?add=%5Bmascarado%3A8%5D&t=%5Bmascarado%3A1%5D&gdpr=%5Bmascarado%3A1%5D",
+      "fromDomain": "adnxs.com",
+      "to": "https://secure.adnxs.com/bounce?%2Fseg%3Fadd%3D41934781%26t%3D1%26gdpr%3D0=%5Bmascarado%3A0%5D",
+      "toDomain": "adnxs.com"
+    },
+    {
+      "status": 307,
+      "from": "https://secure.adnxs.com/seg?add=%5Bmascarado%3A8%5D&t=%5Bmascarado%3A1%5D&gdpr=%5Bmascarado%3A1%5D",
+      "fromDomain": "adnxs.com",
+      "to": "https://secure.adnxs.com/bounce?%2Fseg%3Fadd%3D40132462%26t%3D1%26gdpr%3D0=%5Bmascarado%3A0%5D",
+      "toDomain": "adnxs.com"
+    }
+  ],
+  "webSockets": [],
+  "identifierParameters": [
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "eid_criteo.com",
+      "maskedValue": "[mascarado:169]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "tg_i.pbadslot",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "tk_flint",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "x_source.tid",
+      "maskedValue": "[mascarado:37]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "l_pb_bid_id",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "x_imp.ext.tid",
+      "maskedValue": "[mascarado:37]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "p_gpid",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "endpoint": "https://fastlane.rubiconproject.com/a/api/fastlane.json",
+      "name": "rand",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "pvsid",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "correlator",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "eid",
+      "maskedValue": "[mascarado:55]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "iu_parts",
+      "maskedValue": "[mascarado:24]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "prev_iu_szs",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "dids",
+      "maskedValue": "[mascarado:21]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "cookie",
+      "maskedValue": "[mascarado:83]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "gpic",
+      "maskedValue": "[mascarado:84]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "psts",
+      "maskedValue": "[mascarado:343]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "a3p",
+      "maskedValue": "[mascarado:1376]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "ppid",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "prev_scp",
+      "maskedValue": "[mascarado:100]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "cust_params",
+      "maskedValue": "[mascarado:423]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "eo_id_str",
+      "maskedValue": "[mascarado:77]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "gblpids",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/gampad/ads",
+      "name": "pb_szs",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "xai",
+      "maskedValue": "[mascarado:195]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "sig",
+      "maskedValue": "[mascarado:23]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "id",
+      "maskedValue": "[mascarado:8]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "p",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "mtos",
+      "maskedValue": "[mascarado:21]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/pcs/view",
+      "name": "xai",
+      "maskedValue": "[mascarado:443]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/pcs/view",
+      "name": "sai",
+      "maskedValue": "[mascarado:403]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "endpoint": "https://securepubads.g.doubleclick.net/pcs/view",
+      "name": "sig",
+      "maskedValue": "[mascarado:23]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.google.com",
+      "endpoint": "https://www.google.com/ads/measurement/l",
+      "name": "ebcid",
+      "maskedValue": "[mascarado:98]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pagead/gen_204",
+      "name": "type",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "endpoint": "https://sb.scorecardresearch.com/p",
+      "name": "cs_fpid",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "endpoint": "https://sb.scorecardresearch.com/b",
+      "name": "cv",
+      "maskedValue": "[mascarado:17]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "endpoint": "https://sb.scorecardresearch.com/b",
+      "name": "c4",
+      "maskedValue": "[mascarado:31]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "api.permutive.com",
+      "endpoint": "https://api.permutive.com/v2.0/batch/events",
+      "name": "k",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "analytics.google.com",
+      "endpoint": "https://analytics.google.com/g/collect",
+      "name": "gtm",
+      "maskedValue": "[mascarado:37]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "analytics.google.com",
+      "endpoint": "https://analytics.google.com/g/collect",
+      "name": "cid",
+      "maskedValue": "[mascarado:20]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "analytics.google.com",
+      "endpoint": "https://analytics.google.com/g/collect",
+      "name": "tag_exp",
+      "maskedValue": "[mascarado:99]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/activity/push",
+      "name": "rnd",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/activity/push",
+      "name": "ckp",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/activity/push",
+      "name": "sid",
+      "maskedValue": "[mascarado:19]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/activity/push",
+      "name": "glb",
+      "maskedValue": "[mascarado:41]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/activity/push",
+      "name": "arnd",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "h.jsuol.com.br",
+      "endpoint": "https://h.jsuol.com.br/assets/",
+      "name": "asset",
+      "maskedValue": "[mascarado:19]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.google.com.br",
+      "endpoint": "https://www.google.com.br/ads/ga-audiences",
+      "name": "cid",
+      "maskedValue": "[mascarado:20]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "www.google.com.br",
+      "endpoint": "https://www.google.com.br/ads/ga-audiences",
+      "name": "gtm",
+      "maskedValue": "[mascarado:37]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.google.com.br",
+      "endpoint": "https://www.google.com.br/ads/ga-audiences",
+      "name": "tag_exp",
+      "maskedValue": "[mascarado:99]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "tm.jsuol.com.br",
+      "endpoint": "https://tm.jsuol.com.br/uoltm.js",
+      "name": "id",
+      "maskedValue": "[mascarado:6]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "www.googletagmanager.com",
+      "endpoint": "https://www.googletagmanager.com/gtag/js",
+      "name": "id",
+      "maskedValue": "[mascarado:12]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "gum.criteo.com",
+      "endpoint": "https://gum.criteo.com/sid/json",
+      "name": "bundle",
+      "maskedValue": "[mascarado:231]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "fundingchoicesmessages.google.com",
+      "endpoint": "https://fundingchoicesmessages.google.com/f/[segmento-mascarado]",
+      "name": "fccs",
+      "maskedValue": "[mascarado:516]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "endpoint": "https://sb.scorecardresearch.com/b",
+      "name": "cs_fpcu",
+      "maskedValue": "[mascarado:32]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "tm.uol.com.br",
+      "endpoint": "https://tm.uol.com.br/[segmento-mascarado]",
+      "name": "expname",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "h.jsuol.com.br",
+      "endpoint": "https://h.jsuol.com.br/assets/",
+      "name": "hash",
+      "maskedValue": "[mascarado:32]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.uol.com.br",
+      "endpoint": "https://www.uol.com.br/index.jsx",
+      "name": "asset",
+      "maskedValue": "[mascarado:32]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "endpoint": "https://ep1.adtrafficquality.google/getconfig/sodar",
+      "name": "sjk",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "marfeelexperimentsexperienceengine.mrf.io",
+      "endpoint": "https://marfeelexperimentsexperienceengine.mrf.io/[segmento-mascarado]/render",
+      "name": "id",
+      "maskedValue": "[mascarado:25]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "ping.chartbeat.net",
+      "endpoint": "https://ping.chartbeat.net/ping",
+      "name": "u",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ping.chartbeat.net",
+      "endpoint": "https://ping.chartbeat.net/ping",
+      "name": "t",
+      "maskedValue": "[mascarado:28]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ping.chartbeat.net",
+      "endpoint": "https://ping.chartbeat.net/ping",
+      "name": "z",
+      "maskedValue": "[mascarado:60]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ping.chartbeat.net",
+      "endpoint": "https://ping.chartbeat.net/ping",
+      "name": "sv",
+      "maskedValue": "[mascarado:28]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pagead/sodar",
+      "name": "li",
+      "maskedValue": "[mascarado:17]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pagead/sodar",
+      "name": "jk",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/Repo/rep.gif",
+      "name": "cks",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "endpoint": "https://comcluster.cxense.com/Repo/rep.gif",
+      "name": "eid0",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "endpoint": "https://ep1.adtrafficquality.google/pagead/sodar",
+      "name": "id",
+      "maskedValue": "[mascarado:6]",
+      "rule": "nome identificador conhecido"
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "endpoint": "https://ep1.adtrafficquality.google/pagead/sodar",
+      "name": "li",
+      "maskedValue": "[mascarado:17]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "endpoint": "https://ep1.adtrafficquality.google/pagead/sodar",
+      "name": "jk",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "endpoint": "https://ep1.adtrafficquality.google/pagead/sodar",
+      "name": "bg",
+      "maskedValue": "[mascarado:1241]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "analytics.google.com",
+      "endpoint": "https://analytics.google.com/g/collect",
+      "name": "up.pseudo_id",
+      "maskedValue": "[mascarado:20]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "analytics.google.com",
+      "endpoint": "https://analytics.google.com/g/collect",
+      "name": "up.uol_id",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "iu",
+      "maskedValue": "[mascarado:28]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "ppid",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "correlator",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "omid_p",
+      "maskedValue": "[mascarado:17]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "media_url",
+      "maskedValue": "[mascarado:66]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "sid",
+      "maskedValue": "[mascarado:36]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "a3p",
+      "maskedValue": "[mascarado:1376]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "eid",
+      "maskedValue": "[mascarado:35]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "cookie",
+      "maskedValue": "[mascarado:83]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "gpic",
+      "maskedValue": "[mascarado:84]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "eo_id_str",
+      "maskedValue": "[mascarado:77]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "pvsid",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "scor",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "ged",
+      "maskedValue": "[mascarado:70]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "endpoint": "https://pubads.g.doubleclick.net/gampad/ads",
+      "name": "slotname",
+      "maskedValue": "[mascarado:28]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "csi.gstatic.com",
+      "endpoint": "https://csi.gstatic.com/csi",
+      "name": "ghmsh_eids",
+      "maskedValue": "[mascarado:35]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "tos",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "endpoint": "https://pagead2.googlesyndication.com/pcs/activeview",
+      "name": "tu",
+      "maskedValue": "[mascarado:18]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "www.youtube.com",
+      "endpoint": "https://www.youtube.com/embed/i8vzs1fISNA",
+      "name": "embed_config",
+      "maskedValue": "[mascarado:97]",
+      "rule": "valor longo com aparência de identificador"
+    }
+  ],
+  "requestsByDomain": [
+    {
+      "domain": "1966a6ab0bcf78b27551636567b427a9.safeframe.googlesyndication.com",
+      "count": 1
+    },
+    {
+      "domain": "4b91477e-f67b-4d81-86db-a9742bd41e9c.edge.permutive.app",
+      "count": 1
+    },
+    {
+      "domain": "analytics.google.com",
+      "count": 3
+    },
+    {
+      "domain": "api.mais.uol.com.br",
+      "count": 13
+    },
+    {
+      "domain": "api.permutive.com",
+      "count": 12
+    },
+    {
+      "domain": "ats-wrapper.privacymanager.io",
+      "count": 1
+    },
+    {
+      "domain": "bs.uol.com.br",
+      "count": 1
+    },
+    {
+      "domain": "c.amazon-adsystem.com",
+      "count": 2
+    },
+    {
+      "domain": "c2.piano.io",
+      "count": 1
+    },
+    {
+      "domain": "cdn.cxense.com",
+      "count": 2
+    },
+    {
+      "domain": "cdn.tinypass.com",
+      "count": 1
+    },
+    {
+      "domain": "comcluster.cxense.com",
+      "count": 2
+    },
+    {
+      "domain": "config.aps.amazon-adsystem.com",
+      "count": 1
+    },
+    {
+      "domain": "conteudo.imguol.com.br",
+      "count": 67
+    },
+    {
+      "domain": "conteudo.jsuol.com.br",
+      "count": 2
+    },
+    {
+      "domain": "croupier.mais.uol.com.br",
+      "count": 2
+    },
+    {
+      "domain": "csi.gstatic.com",
+      "count": 3
+    },
+    {
+      "domain": "ep1.adtrafficquality.google",
+      "count": 2
+    },
+    {
+      "domain": "ep2.adtrafficquality.google",
+      "count": 3
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "count": 25
+    },
+    {
+      "domain": "experiences.newsroom.bi",
+      "count": 1
+    },
+    {
+      "domain": "fastlane.rubiconproject.com",
+      "count": 10
+    },
+    {
+      "domain": "fonts.gstatic.com",
+      "count": 2
+    },
+    {
+      "domain": "fundingchoicesmessages.google.com",
+      "count": 19
+    },
+    {
+      "domain": "googleads.g.doubleclick.net",
+      "count": 1
+    },
+    {
+      "domain": "gum.criteo.com",
+      "count": 2
+    },
+    {
+      "domain": "h.jsuol.com.br",
+      "count": 18
+    },
+    {
+      "domain": "i.ytimg.com",
+      "count": 1
+    },
+    {
+      "domain": "ib.adnxs.com",
+      "count": 15
+    },
+    {
+      "domain": "imasdk.googleapis.com",
+      "count": 4
+    },
+    {
+      "domain": "img.youtube.com",
+      "count": 2
+    },
+    {
+      "domain": "jnn-pa.googleapis.com",
+      "count": 2
+    },
+    {
+      "domain": "launchpad-wrapper.privacymanager.io",
+      "count": 1
+    },
+    {
+      "domain": "launchpad.privacymanager.io",
+      "count": 1
+    },
+    {
+      "domain": "mab.chartbeat.com",
+      "count": 1
+    },
+    {
+      "domain": "marfeelexperimentsexperienceengine.mrf.io",
+      "count": 1
+    },
+    {
+      "domain": "me.jsuol.com",
+      "count": 2
+    },
+    {
+      "domain": "me.jsuol.com.br",
+      "count": 3
+    },
+    {
+      "domain": "mfe.fantascope.uol.com.br",
+      "count": 1
+    },
+    {
+      "domain": "pagead2.googlesyndication.com",
+      "count": 27
+    },
+    {
+      "domain": "ping.chartbeat.net",
+      "count": 4
+    },
+    {
+      "domain": "player.fantascope.uol.com.br",
+      "count": 2
+    },
+    {
+      "domain": "prg.smartadserver.com",
+      "count": 9
+    },
+    {
+      "domain": "pubads.g.doubleclick.net",
+      "count": 4
+    },
+    {
+      "domain": "s.cdn.turner.com",
+      "count": 1
+    },
+    {
+      "domain": "s.seedtag.com",
+      "count": 11
+    },
+    {
+      "domain": "s0.2mdn.net",
+      "count": 1
+    },
+    {
+      "domain": "sb.scorecardresearch.com",
+      "count": 23
+    },
+    {
+      "domain": "sdk.mrf.io",
+      "count": 2
+    },
+    {
+      "domain": "secure.adnxs.com",
+      "count": 4
+    },
+    {
+      "domain": "securepubads.g.doubleclick.net",
+      "count": 18
+    },
+    {
+      "domain": "static.chartbeat.com",
+      "count": 2
+    },
+    {
+      "domain": "static.doubleclick.net",
+      "count": 1
+    },
+    {
+      "domain": "thumb.mais.uol.com.br",
+      "count": 1
+    },
+    {
+      "domain": "tm.jsuol.com.br",
+      "count": 11
+    },
+    {
+      "domain": "tm.uol.com.br",
+      "count": 3
+    },
+    {
+      "domain": "tpc.googlesyndication.com",
+      "count": 8
+    },
+    {
+      "domain": "udr.uol.com.br",
+      "count": 1
+    },
+    {
+      "domain": "upc.udr.uol.com.br",
+      "count": 1
+    },
+    {
+      "domain": "video47.mais.uol.com.br",
+      "count": 99
+    },
+    {
+      "domain": "web-banner.ads.aps.amazon-adsystem.com",
+      "count": 1
+    },
+    {
+      "domain": "www.google-analytics.com",
+      "count": 1
+    },
+    {
+      "domain": "www.google.com",
+      "count": 4
+    },
+    {
+      "domain": "www.google.com.br",
+      "count": 1
+    },
+    {
+      "domain": "www.googletagmanager.com",
+      "count": 3
+    },
+    {
+      "domain": "www.uol.com.br",
+      "count": 3
+    },
+    {
+      "domain": "www.youtube.com",
+      "count": 12
+    }
+  ],
+  "possiblePolling": [
+    {
+      "domain": "video47.mais.uol.com.br",
+      "method": "GET",
+      "endpoint": "https://video47.mais.uol.com.br/live/4938.mpd",
+      "callCount": 33,
+      "averageIntervalMs": 5007,
+      "justification": "4 chamadas recentes ao mesmo endpoint com intervalo regular"
+    },
+    {
+      "domain": "events.newsroom.bi",
+      "method": "POST",
+      "endpoint": "https://events.newsroom.bi/ingest.php",
+      "callCount": 17,
+      "averageIntervalMs": 15002,
+      "justification": "4 chamadas recentes ao mesmo endpoint com intervalo regular"
+    }
+  ]
+}

@@ -137,8 +137,45 @@ test("detecta passagem rápida por intermediário com redirects automáticos", (
   assert.equal(detections[0].intervalMs, 800);
 });
 
+test("detecta entrada por clique seguida de saída automática do intermediário", () => {
+  const detections = detectBounceTracking([
+    {
+      fromDomain: "origem.test",
+      toDomain: "intermediario.test",
+      timestamp: 1000,
+      automatic: false,
+    },
+    {
+      fromDomain: "intermediario.test",
+      toDomain: "destino.test",
+      timestamp: 1400,
+      automatic: true,
+    },
+  ]);
+
+  assert.equal(detections.length, 1);
+  assert.equal(detections[0].intermediateDomain, "intermediario.test");
+});
+
 test("não marca navegação direta ou redirects lentos", () => {
   assert.deepEqual(detectBounceTracking([]), []);
+  assert.deepEqual(
+    detectBounceTracking([
+      {
+        fromDomain: "origem.test",
+        toDomain: "intermediario.test",
+        timestamp: 1000,
+        automatic: false,
+      },
+      {
+        fromDomain: "intermediario.test",
+        toDomain: "destino.test",
+        timestamp: 1200,
+        automatic: false,
+      },
+    ]),
+    []
+  );
   assert.deepEqual(
     detectBounceTracking([
       {

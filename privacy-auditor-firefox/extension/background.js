@@ -145,17 +145,59 @@ function registrableDomainFromUrl(url) {
 }
 
 function appendNavigationEntry(chain, url, timestamp, transition) {
+  const safeUrl = redactIdentifierParameters(url);
   const lastEntry = chain.entries[chain.entries.length - 1];
-  if (lastEntry && lastEntry.url === url) {
-    return;
+  if (lastEntry && lastEntry.url === safeUrl) {
+    return lastEntry;
   }
 
-  chain.entries.push({
-    url: redactIdentifierParameters(url),
+  const entry = {
+    url: safeUrl,
     registrableDomain: registrableDomainFromUrl(url),
     timestamp,
     transition,
-  });
+  };
+  chain.entries.push(entry);
+  return entry;
+}
+
+function appendNavigationTransition(
+  chain,
+  fromUrl,
+  toUrl,
+  timestamp,
+  options = {}
+) {
+  const safeFromUrl = redactIdentifierParameters(fromUrl);
+  const safeToUrl = redactIdentifierParameters(toUrl);
+  const previous = chain.redirects[chain.redirects.length - 1];
+
+  if (
+    previous &&
+    previous.fromUrl === safeFromUrl &&
+    previous.toUrl === safeToUrl
+  ) {
+    if (options.automatic) {
+      previous.automatic = true;
+    }
+    if (options.transition) {
+      previous.transition = options.transition;
+    }
+    return previous;
+  }
+
+  const navigation = {
+    fromUrl: safeFromUrl,
+    fromDomain: registrableDomainFromUrl(fromUrl),
+    toUrl: safeToUrl,
+    toDomain: registrableDomainFromUrl(toUrl),
+    timestamp,
+    statusCode: options.statusCode || 0,
+    automatic: Boolean(options.automatic),
+    transition: options.transition || "navegação",
+  };
+  chain.redirects.push(navigation);
+  return navigation;
 }
 
 function recordMainFrameNavigation(details) {
@@ -163,17 +205,48 @@ function recordMainFrameNavigation(details) {
     ? details.timeStamp
     : Date.now();
   let chain = navigationChains.get(details.tabId);
+  const previousState = tabStates.get(details.tabId);
+  const isNewRequest = !chain || chain.requestId !== details.requestId;
+  const chainExpired = Boolean(
+    chain &&
+      isNewRequest &&
+      timestamp - (chain.lastActivity || 0) > BOUNCE_INTERVAL_MS
+  );
 
-  if (!chain || chain.requestId !== details.requestId) {
+  if (!chain || chainExpired) {
     chain = {
       requestId: details.requestId,
       entries: [],
       redirects: [],
+      lastActivity: timestamp,
     };
     navigationChains.set(details.tabId, chain);
+
+    if (previousState?.url && previousState.url !== details.url) {
+      appendNavigationEntry(chain, previousState.url, timestamp, "origem");
+    }
   }
 
+  const previousEntry = chain.entries[chain.entries.length - 1];
   appendNavigationEntry(chain, details.url, timestamp, "navegação");
+  const currentEntry = chain.entries[chain.entries.length - 1];
+
+  if (
+    isNewRequest &&
+    previousEntry &&
+    currentEntry &&
+    previousEntry.url !== currentEntry.url
+  ) {
+    appendNavigationTransition(
+      chain,
+      previousEntry.url,
+      currentEntry.url,
+      timestamp
+    );
+  }
+
+  chain.requestId = details.requestId;
+  chain.lastActivity = timestamp;
   return chain;
 }
 
@@ -185,33 +258,68 @@ function recordMainFrameRedirect(details) {
   const timestamp = Number.isFinite(details.timeStamp)
     ? details.timeStamp
     : Date.now();
-  let chain = navigationChains.get(details.tabId);
-
-  if (!chain || chain.requestId !== details.requestId) {
-    chain = {
-      requestId: details.requestId,
-      entries: [],
-      redirects: [],
-    };
-    navigationChains.set(details.tabId, chain);
-  }
+  const chain =
+    navigationChains.get(details.tabId) || recordMainFrameNavigation(details);
 
   appendNavigationEntry(chain, details.url, timestamp, "navegação");
   appendNavigationEntry(chain, details.redirectUrl, timestamp, "redirecionamento");
-  chain.redirects.push({
-    fromUrl: redactIdentifierParameters(details.url),
-    fromDomain: registrableDomainFromUrl(details.url),
-    toUrl: redactIdentifierParameters(details.redirectUrl),
-    toDomain: registrableDomainFromUrl(details.redirectUrl),
-    timestamp,
+  appendNavigationTransition(chain, details.url, details.redirectUrl, timestamp, {
     statusCode: details.statusCode,
     automatic: true,
+    transition: "redirecionamento HTTP",
   });
+  chain.lastActivity = timestamp;
 
   const state = tabStates.get(details.tabId);
   if (state) {
     state.navigationChain = chain;
   }
+}
+
+function recordCommittedMainFrameNavigation(details) {
+  if (details.frameId !== 0 || details.tabId === -1) {
+    return;
+  }
+
+  const timestamp = Number.isFinite(details.timeStamp)
+    ? details.timeStamp
+    : Date.now();
+  const chain = navigationChains.get(details.tabId);
+  const qualifiers = Array.isArray(details.transitionQualifiers)
+    ? details.transitionQualifiers
+    : [];
+  const automaticTransition = qualifiers.find((qualifier) =>
+    ["client_redirect", "server_redirect"].includes(qualifier)
+  );
+
+  if (chain) {
+    const safeUrl = redactIdentifierParameters(details.url);
+    const transition = chain.redirects
+      .slice()
+      .reverse()
+      .find((item) => item.toUrl === safeUrl);
+
+    if (transition && automaticTransition) {
+      transition.automatic = true;
+      transition.transition = automaticTransition;
+      transition.timestamp = timestamp;
+    }
+
+    const lastEntry = chain.entries[chain.entries.length - 1];
+    if (lastEntry && lastEntry.url === safeUrl && automaticTransition) {
+      lastEntry.transition = automaticTransition;
+      lastEntry.timestamp = timestamp;
+    }
+
+    chain.lastActivity = timestamp;
+  }
+
+  const state = getOrCreateTabState(details.tabId, details.url);
+  if (chain) {
+    state.navigationChain = chain;
+  }
+  updateMainDocument(state, details.url);
+  snapshotCookiesForHostname(details.tabId, state, state.hostname);
 }
 
 async function hashIdentifierValue(value) {
@@ -974,15 +1082,7 @@ browser.webRequest.onBeforeRedirect.addListener(recordMainFrameRedirect, {
 
 // Atualiza a URL final depois de redirecionamentos sem limpar as requisições
 // que já pertencem à navegação corrente.
-browser.webNavigation.onCommitted.addListener((details) => {
-  if (details.frameId !== 0 || details.tabId === -1) {
-    return;
-  }
-
-  const state = getOrCreateTabState(details.tabId, details.url);
-  updateMainDocument(state, details.url);
-  snapshotCookiesForHostname(details.tabId, state, state.hostname);
-});
+browser.webNavigation.onCommitted.addListener(recordCommittedMainFrameNavigation);
 
 browser.cookies.onChanged.addListener(recordCookieChange);
 

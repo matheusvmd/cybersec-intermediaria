@@ -82,6 +82,47 @@ A instalação temporária é removida quando o Firefox é fechado. Após recarr
 a extensão em `about:debugging`, recarregue também as páginas que deseja
 inspecionar para que o content script seja executado novamente.
 
+## Evidências e relatório
+
+O procedimento padronizado está em
+[`evidencias/sites/METODOLOGIA.md`](evidencias/sites/METODOLOGIA.md), e o
+relatório consolidado está em [`RELATORIO.md`](RELATORIO.md). Cada site possui
+um checklist e um template de análise:
+
+- `evidencias/sites/uol/`
+- `evidencias/sites/mercado-livre/`
+- `evidencias/sites/wikipedia/`
+
+Dentro de cada diretório:
+
+- `plugin/`: prints do popup do Privacy Auditor;
+- `blacklight/`: prints do relatório do Blacklight;
+- `ublock/`: prints do Logger do uBlock Origin;
+- `har/`: HAR exportado e resumos gerados localmente;
+- `analise.md`: resultados e reconciliação das ferramentas.
+
+Campos sem evidência devem permanecer como `PENDENTE`. Não inclua no
+repositório informações pessoais, sessões autenticadas ou HARs que não tenham
+sido revisados.
+
+### Analisar um HAR
+
+Execute:
+
+```sh
+node scripts/analyze-har.js evidencias/sites/SITE/har/arquivo.har
+```
+
+O comando não altera o HAR. Ele cria, no mesmo diretório,
+`arquivo.summary.md` e `arquivo.summary.json`. O resumo inclui domínios, tipos
+de recurso, redirects, presença de `Set-Cookie`, WebSockets, nomes de parâmetros
+potencialmente identificadores e possíveis padrões de polling.
+
+Valores de query são mascarados e os valores de `Cookie`, `Set-Cookie` e
+`Authorization` não são copiados para os resumos. As classificações de
+terceiros, identificadores e polling são heurísticas e precisam ser conferidas
+nas evidências.
+
 ## Desenvolvimento
 
 Instale as dependências:
@@ -100,7 +141,7 @@ npm run build
 ```
 
 - `lint` valida a extensão com `web-ext`.
-- `test` executa os testes unitários de domínios, cookies, parâmetros
-  identificadores, bounce tracking, polling, bloqueio e score.
+- `test` executa os testes unitários da extensão e do analisador de HAR com uma
+  fixture fictícia.
 - `run` inicia uma instância temporária do Firefox com a extensão carregada.
 - `build` gera o pacote em `web-ext-artifacts/`.

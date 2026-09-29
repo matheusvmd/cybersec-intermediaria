@@ -72,6 +72,18 @@ test("localhost, IPv4 e falha da publicSuffix usam fallback seguro", () => {
     getRegistrableDomain("cdn.example.com", throwingApi),
     "example.com"
   );
+  assert.equal(
+    getRegistrableDomain("conteudo.uol.com.br", throwingApi),
+    "uol.com.br"
+  );
+  assert.equal(
+    getRegistrableDomain("assets.mercadolivre.com.br", throwingApi),
+    "mercadolivre.com.br"
+  );
+  assert.equal(
+    getRegistrableDomain("portal.example.br", throwingApi),
+    "example.br"
+  );
 });
 
 test("cookie é classificado por parte e duração", () => {

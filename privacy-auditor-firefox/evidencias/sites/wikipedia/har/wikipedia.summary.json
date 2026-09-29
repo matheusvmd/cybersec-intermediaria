@@ -1,0 +1,84 @@
+{
+  "sourceFile": "wikipedia.har",
+  "disclaimer": "Resultados heurísticos; confirme cada item no HAR original e nas demais evidências.",
+  "totalRequests": 38,
+  "mainDomain": "wikipedia.org",
+  "uniqueDomains": [
+    "meta.wikimedia.org",
+    "pt.wikipedia.org",
+    "thumb.wikimedia.org"
+  ],
+  "possibleThirdPartyDomains": [
+    "meta.wikimedia.org",
+    "thumb.wikimedia.org"
+  ],
+  "countsByResourceType": {
+    "document": 1,
+    "image": 25,
+    "json": 1,
+    "script": 7,
+    "stylesheet": 4
+  },
+  "responsesWithSetCookie": [
+    {
+      "domain": "thumb.wikimedia.org",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/[segmento-mascarado]/[segmento-mascarado]?utm_source=%5Bmascarado%3A16%5D&utm_campaign=%5Bmascarado%3A6%5D&utm_content=%5Bmascarado%3A9%5D",
+      "status": 304,
+      "headerCount": 2,
+      "cookieNames": [
+        "GeoIP",
+        "NetworkProbeLimit"
+      ]
+    },
+    {
+      "domain": "thumb.wikimedia.org",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/[segmento-mascarado]/[segmento-mascarado]?utm_source=%5Bmascarado%3A16%5D&utm_campaign=%5Bmascarado%3A6%5D&utm_content=%5Bmascarado%3A9%5D",
+      "status": 304,
+      "headerCount": 2,
+      "cookieNames": [
+        "GeoIP",
+        "NetworkProbeLimit"
+      ]
+    }
+  ],
+  "redirects": [],
+  "webSockets": [],
+  "identifierParameters": [
+    {
+      "domain": "pt.wikipedia.org",
+      "endpoint": "https://pt.wikipedia.org/w/load.php",
+      "name": "modules",
+      "maskedValue": "[mascarado:41]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "pt.wikipedia.org",
+      "endpoint": "https://pt.wikipedia.org/w/load.php",
+      "name": "image",
+      "maskedValue": "[mascarado:16]",
+      "rule": "valor longo com aparência de identificador"
+    },
+    {
+      "domain": "meta.wikimedia.org",
+      "endpoint": "https://meta.wikimedia.org/w/index.php",
+      "name": "title",
+      "maskedValue": "[mascarado:26]",
+      "rule": "valor longo com aparência de identificador"
+    }
+  ],
+  "requestsByDomain": [
+    {
+      "domain": "meta.wikimedia.org",
+      "count": 2
+    },
+    {
+      "domain": "pt.wikipedia.org",
+      "count": 19
+    },
+    {
+      "domain": "thumb.wikimedia.org",
+      "count": 17
+    }
+  ],
+  "possiblePolling": []
+}
